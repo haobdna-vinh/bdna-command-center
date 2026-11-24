@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>MUSE COMMAND CENTER - BƯU ĐIỆN NGHỆ AN</title>
+  <title>MUSE COMMAND CENTER - CỤM VINH</title>
 
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22AI%20Command%20Center%20B%C4%90NA%22%2C%22short_name%22%3A%22CommandCenter%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23060b14%22%2C%22theme_color%22%3A%22%230f172a%22%7D">
 
@@ -105,7 +105,7 @@
     <div onclick="switchAppTab('TrangChu')" class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold border border-slate-700 cursor-pointer">
       <i class="fa-solid fa-bars text-white"></i>
     </div>
-    <div onclick="openAgentModal('Chủ Tịch Phạm Bá Hào', 'CHỦ TỊCH & GIÁM ĐỐC', 'Đang trực tiếp chỉ đạo & điều hành bộ máy 8 nhân viên AI tác chiến.', '👑', 'pham_ba_hao.jpg', 'chu_tich')" class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-xs text-slate-900 font-bold shadow-lg cursor-pointer">
+    <div onclick="openAgentModal('Chủ Tịch Phạm Bá Hào', 'CHỦ TỊCH & GIÁM ĐỐC', 'Đang trực tiếp chỉ đạo & điều hành Cụm Bưu điện Vinh.', '👑', 'pham_ba_hao.jpg', 'chu_tich')" class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-xs text-slate-900 font-bold shadow-lg cursor-pointer">
       🐱
     </div>
     <div onclick="switchAppTab('CaiDat')" class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold border border-slate-700 cursor-pointer">
@@ -121,7 +121,7 @@
       </div>
       <div>
         <h1 class="text-base font-black tracking-wide text-white">MUSE COMMAND CENTER</h1>
-        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">TRUNG TÂM ĐIỀU HÀNH • BƯU ĐIỆN NGHỆ AN</p>
+        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">ĐIỀU HÀNH CỤM VINH • BƯU ĐIỆN THÀNH VINH</p>
       </div>
     </div>
     <div class="text-right">
@@ -132,75 +132,82 @@
     </div>
   </div>
 
-  <!-- TAB 1: TRANG CHỦ (ĐƯA BÁO CÁO BCCP LÊN ĐẦU, LOGISTICS LÊN THỨ 2) -->
+  <!-- TAB 1: TRANG CHỦ (TỔNG QUAN BCCP CỤM VINH LÊN ĐẦU TIÊN) -->
   <div id="pageTrangChu" class="tab-page active-page">
     
-    <!-- 1. BÁO CÁO TỔNG QUAN BCCP (BƯU CHÍNH CHUYỂN PHÁT - ĐẦU TIÊN) -->
-    <div class="card-navy p-4 mb-4 border border-amber-500/40">
+    <!-- 1. BÁO CÁO TỔNG QUAN BCCP CỤM VINH (BƯU ĐIỆN THÀNH VINH) -->
+    <div class="card-navy p-4 mb-4 border border-amber-500/50">
       <div class="flex justify-between items-center mb-3">
-        <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center">
-          <i class="fa-solid fa-chart-line mr-1.5"></i>1. TỔNG QUAN BƯU CHÍNH CHUYỂN PHÁT (BCCP)
-        </h3>
-        <span class="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded">Tháng 11/2026</span>
+        <div>
+          <span class="bg-amber-500 text-slate-950 text-[9px] font-black px-2 py-0.5 rounded uppercase">GIÁM ĐỐC CỤM VINH</span>
+          <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider mt-1 flex items-center">
+            <i class="fa-solid fa-city mr-1.5"></i>1. TỔNG QUAN BCCP CỤM VINH (BĐ THÀNH VINH)
+          </h3>
+        </div>
+        <!-- Scope Toggle Buttons -->
+        <div class="flex bg-slate-800 p-0.5 rounded-lg border border-slate-700 text-[10px]">
+          <button class="bg-amber-500 text-slate-950 font-black px-2 py-0.5 rounded">Cụm Vinh</button>
+          <button onclick="showToast('Xem Toàn tỉnh: 7.16 Tỷ')" class="text-slate-400 px-2 py-0.5 hover:text-white">Toàn Tỉnh</button>
+        </div>
       </div>
 
-      <!-- KPI Top Grid -->
+      <!-- KPI Top Grid for Cụm Vinh -->
       <div class="grid grid-cols-2 gap-2.5 text-xs mb-3">
         <div class="bg-slate-800/90 p-3 rounded-xl border border-slate-700">
-          <span class="text-[10px] text-slate-400 block font-medium">Tổng Doanh Thu BCCP</span>
-          <span class="text-lg font-black text-amber-400 block mt-0.5">7.16 Tỷ <small class="text-[10px] text-emerald-400">▲ +3.2%</small></span>
-          <span class="text-[9px] text-slate-500">Kỳ trước: 6.94 tỷ</span>
+          <span class="text-[10px] text-slate-400 block font-medium">Doanh Thu BCCP Cụm Vinh</span>
+          <span class="text-lg font-black text-amber-400 block mt-0.5">3.15 Tỷ <small class="text-[10px] text-emerald-400">▲ +4.1%</small></span>
+          <span class="text-[9px] text-slate-500">Chiếm 44% toàn tỉnh</span>
         </div>
         <div class="bg-slate-800/90 p-3 rounded-xl border border-slate-700">
-          <span class="text-[10px] text-slate-400 block font-medium">Tổng Sản Lượng Bưu Gửi</span>
-          <span class="text-lg font-black text-cyan-400 block mt-0.5">288.032 <small class="text-[10px] text-emerald-400">bưu gửi</small></span>
-          <span class="text-[9px] text-slate-500">Kỳ trước: 283.289</span>
+          <span class="text-[10px] text-slate-400 block font-medium">Sản Lượng Bưu Gửi Cụm Vinh</span>
+          <span class="text-lg font-black text-cyan-400 block mt-0.5">126.800 <small class="text-[10px] text-emerald-400">bưu gửi</small></span>
+          <span class="text-[9px] text-slate-500">Kỳ trước: 122.150</span>
         </div>
         <div class="bg-slate-800/90 p-3 rounded-xl border border-slate-700">
-          <span class="text-[10px] text-slate-400 block font-medium">Doanh Thu Ngày 23/11</span>
-          <span class="text-base font-black text-emerald-400 block mt-0.5">440,6 Tr <small class="text-[9px] text-emerald-400">▲ +300%</small></span>
-          <span class="text-[9px] text-slate-500">Sản lượng: 16.903 đơn/ngày</span>
+          <span class="text-[10px] text-slate-400 block font-medium">Doanh Thu Ngày (Cụm Vinh)</span>
+          <span class="text-base font-black text-emerald-400 block mt-0.5">195,4 Tr <small class="text-[9px] text-emerald-400">▲ +280%</small></span>
+          <span class="text-[9px] text-slate-500">Sản lượng: 7.420 đơn/ngày</span>
         </div>
         <div class="bg-slate-800/90 p-3 rounded-xl border border-slate-700">
-          <span class="text-[10px] text-slate-400 block font-medium">Đơn Giá Bình Quân</span>
-          <span class="text-base font-black text-purple-300 block mt-0.5">15.827 đ/kg</span>
-          <span class="text-[9px] text-slate-500">Khối lượng: 452.559 kg</span>
+          <span class="text-[10px] text-slate-400 block font-medium">Địa Bàn Phụ Trách</span>
+          <span class="text-base font-black text-purple-300 block mt-0.5">6 Đơn Vị</span>
+          <span class="text-[9px] text-slate-500">Vinh, Cửa Lò, BC KHL...</span>
         </div>
       </div>
 
-      <!-- Khách Trọng Yếu & Khách Cảnh Báo -->
+      <!-- Khách Trọng Yếu & Khách Cảnh Báo Cụm Vinh -->
       <div class="grid grid-cols-2 gap-2 text-xs mb-3">
         <div class="bg-amber-950/40 p-2.5 rounded-xl border border-amber-800/50">
-          <p class="text-[10px] text-amber-400 font-bold"><i class="fa-solid fa-star mr-1"></i> Khách Trọng Yếu: <span class="text-white text-xs">194 khách</span></p>
-          <p class="text-[10px] text-slate-400 mt-0.5">Chiếm 70% tổng doanh thu</p>
+          <p class="text-[10px] text-amber-400 font-bold"><i class="fa-solid fa-star mr-1"></i> Khách Trọng Yếu Cụm Vinh: <span class="text-white text-xs">86 khách</span></p>
+          <p class="text-[10px] text-slate-400 mt-0.5">Chiếm 72% doanh thu Cụm</p>
         </div>
         <div class="bg-red-950/40 p-2.5 rounded-xl border border-red-800/50">
-          <p class="text-[10px] text-red-400 font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Khách Giảm Mạnh: <span class="text-white text-xs">622 khách</span></p>
-          <p class="text-[10px] text-slate-400 mt-0.5">Giảm ≥ 20% so với kỳ trước</p>
+          <p class="text-[10px] text-red-400 font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Khách Giảm Mạnh Cụm: <span class="text-white text-xs">215 khách</span></p>
+          <p class="text-[10px] text-slate-400 mt-0.5">Cần Zalo OA / Chuyên quản gặp</p>
         </div>
       </div>
 
-      <!-- Cơ cấu Doanh thu Nhóm dịch vụ (TMĐT vs BCTT) -->
+      <!-- Cơ cấu Doanh thu Nhóm dịch vụ Cụm Vinh -->
       <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 text-[11px] space-y-2">
         <div class="flex justify-between items-center">
-          <span class="font-bold text-white"><i class="fa-solid fa-cart-shopping text-cyan-400 mr-1.5"></i>TMĐT (Thương Mại Điện Tử):</span>
-          <span class="font-black text-cyan-400">3.84 Tỷ (53.7% tỷ trọng)</span>
+          <span class="font-bold text-white"><i class="fa-solid fa-cart-shopping text-cyan-400 mr-1.5"></i>TMĐT Cụm Vinh:</span>
+          <span class="font-black text-cyan-400">1.82 Tỷ (57.8% tỷ trọng Cụm)</span>
         </div>
         <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-          <div class="bg-cyan-400 h-full" style="width: 53.7%"></div>
+          <div class="bg-cyan-400 h-full" style="width: 57.8%"></div>
         </div>
 
         <div class="flex justify-between items-center pt-1">
-          <span class="font-bold text-white"><i class="fa-solid fa-envelope text-blue-400 mr-1.5"></i>BCTT (Bưu Chính Truyền Thống):</span>
-          <span class="font-black text-blue-400">2.56 Tỷ (35.8% tỷ trọng)</span>
+          <span class="font-bold text-white"><i class="fa-solid fa-envelope text-blue-400 mr-1.5"></i>BCTT Cụm Vinh:</span>
+          <span class="font-black text-blue-400">1.33 Tỷ (42.2% tỷ trọng Cụm)</span>
         </div>
         <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-          <div class="bg-blue-400 h-full" style="width: 35.8%"></div>
+          <div class="bg-blue-400 h-full" style="width: 42.2%"></div>
         </div>
       </div>
     </div>
 
-    <!-- 2. BÁO CÁO LOGISTICS & 3PL (THỨ THU HAI) -->
+    <!-- 2. BÁO CÁO LOGISTICS & 3PL (THỨ HAI) -->
     <div class="card-navy p-4 mb-16 border border-blue-800">
       <div class="flex justify-between items-center mb-3">
         <h3 class="text-xs font-bold text-blue-400 uppercase tracking-wider flex items-center">
@@ -211,7 +218,7 @@
 
       <div class="grid grid-cols-2 gap-2.5 text-xs">
         <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
-          <p class="text-[10px] text-slate-400">Doanh Thu 3PL Logistics</p>
+          <p class="text-[10px] text-slate-400">Doanh Thu 3PL Cụm Vinh</p>
           <p class="text-base font-black text-emerald-400 mt-1">185.4M VNĐ</p>
         </div>
         <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
@@ -235,7 +242,7 @@
   <div id="pageVanPhong" class="tab-page">
     <div class="card-navy p-4 mb-5 shadow-2xl">
       <div class="flex justify-between items-center mb-3">
-        <h2 class="text-xs font-bold text-amber-400 uppercase tracking-wider">VĂN PHÒNG LÀM VIỆC (BẤM ĐỂ GIAO VIỆC & XEM KẾT QUẢ)</h2>
+        <h2 class="text-xs font-bold text-amber-400 uppercase tracking-wider">VĂN PHÒNG LÀM VIỆC CỤM VINH (BẤM ĐỂ GIAO VIỆC)</h2>
         <button onclick="showToast('Mở Kênh Chat Nội Bộ')" class="text-[11px] bg-slate-800 text-slate-300 px-3 py-1 rounded-full border border-slate-700 hover:border-amber-400">
           <i class="fa-solid fa-comment mr-1 text-amber-400"></i> Kênh chat
         </button>
@@ -248,11 +255,11 @@
         </div>
         <div class="absolute bottom-2 right-2 text-xl">🌳</div>
 
-        <div class="chibi-char" style="top: 25px; left: 42%;" onclick="openAgentModal('Đại Ca Phạm Bá Hào', 'CHỦ TỊCH / GIÁM ĐỐC', 'Đang chỉ đạo toàn bộ bộ máy 8 nhân viên AI tác chiến.', '👑', 'pham_ba_hao.jpg', 'chu_tich')">
+        <div class="chibi-char" style="top: 25px; left: 42%;" onclick="openAgentModal('Đại Ca Phạm Bá Hào', 'CHỦ TỊCH / GIÁM ĐỐC CỤM VINH', 'Đang chỉ đạo toàn bộ bộ máy 8 nhân viên AI tác chiến tại Cụm Bưu điện Vinh.', '👑', 'pham_ba_hao.jpg', 'chu_tich')">
           <div class="w-12 h-12 rounded-full border-2 border-amber-400 overflow-hidden shadow-xl bg-slate-900">
             <img src="pham_ba_hao.jpg" alt="Chủ tịch Phạm Bá Hào" class="w-full h-full object-cover">
           </div>
-          <span class="badge-tag mt-1 shadow">GHẾ CHỦ TỊCH</span>
+          <span class="badge-tag mt-1 shadow">GHẾ CHỦ TỊCH CỤM VINH</span>
         </div>
 
         <div class="chibi-char" style="top: 85px; left: 18%;" onclick="openAgentModal('Tiểu Đệ', 'TỔNG CHỈ HUY / CEO', 'Đã mã hóa CSDL pgcrypto, kết nối Zalo OA, đẩy code tms-web & điều phối 8 AI.', '⚡', null, 'tieu_de')">
@@ -292,7 +299,7 @@
         <button onclick="selectDesk(this, 'Tiểu Soát', 'ROBOT ĐỐI SOÁT', 'Chuyên chạy đối soát dữ liệu BHXH/BHYT', '⚙️', null, 'tieu_soat')" class="nav-btn">Kênh Nhật (Tiểu Soát)</button>
         <button onclick="selectDesk(this, 'Tiểu Vận', '3PL VẬN TẢI', 'Theo dõi 18 biển số xe đối tác trên tms-web', '🚛', null, 'tieu_van')" class="nav-btn">Kênh Trung (Tiểu Vận)</button>
         <button onclick="selectDesk(this, 'Tiểu Bưu', 'BƯU GỬI KHL', 'Quản lý thu gom KHL Vinh & bưu cục', '📦', null, 'tieu_buu')" class="nav-btn">Kênh Anh (Tiểu Bưu)</button>
-        <button onclick="selectDesk(this, 'Đại Ca Phạm Bá Hào', 'CHỦ TỊCH', 'Giám đốc Bưu điện Thành Vinh • Chỉ đạo chung', '👑', 'pham_ba_hao.jpg', 'chu_tich')" class="nav-btn active">Ghế Chủ Tịch (Đại Ca)</button>
+        <button onclick="selectDesk(this, 'Đại Ca Phạm Bá Hào', 'CHỦ TỊCH CỤM VINH', 'Giám đốc Cụm Vinh • Chỉ đạo chung', '👑', 'pham_ba_hao.jpg', 'chu_tich')" class="nav-btn active">Ghế Chủ Tịch (Cụm Vinh)</button>
         <button onclick="selectDesk(this, 'Tiểu Tham', 'THAM MƯU KẾ HOẠCH', 'Soạn thảo văn bản chỉ đạo & thông báo', '✍️', null, 'tieu_tham')" class="nav-btn">Khu Họp (Tiểu Tham)</button>
         <button onclick="showToast('Chủ tịch tới Khu Nghỉ')" class="nav-btn">Khu Nghỉ</button>
         <button onclick="showToast('Mở Bảng Nhiệm Vụ')" class="nav-btn">Bảng Nhiệm Vụ</button>
@@ -308,7 +315,7 @@
       <div id="activityLog" class="space-y-2.5 text-xs">
         <div class="flex justify-between border-b border-slate-800 pb-2">
           <span class="font-bold text-white">Chủ tịch (Phạm Bá Hào)</span>
-          <span class="text-slate-300">Đang điều hành — 0 việc chờ duyệt</span>
+          <span class="text-slate-300">Đang điều hành Cụm Vinh — 0 việc chờ duyệt</span>
         </div>
         <div class="flex justify-between border-b border-slate-800 pb-2">
           <span class="font-bold text-amber-400">CEO · Tiểu Đệ</span>
@@ -351,7 +358,7 @@
       <div class="p-3 bg-slate-800 rounded-xl border border-slate-700 flex justify-between items-center">
         <div>
           <span class="font-bold text-white block">Supabase CSDL PostgreSQL</span>
-          <span class="text-[10px] text-slate-400">Mã hóa pgcrypto & RLS Bưu cục</span>
+          <span class="text-[10px] text-slate-400">Mã hóa pgcrypto & RLS Cụm Vinh</span>
         </div>
         <span class="text-emerald-400 font-bold">Free 500MB (Đang dùng 12MB)</span>
       </div>
@@ -367,11 +374,11 @@
         <span class="text-[10px] text-slate-400">Mô hình 3PL Broker, Biển số xe & Bảng cước Kanban</span>
       </a>
       <a href="https://thugom-vinh.up.railway.app/" target="_blank" class="block p-3 bg-slate-800 rounded-xl border border-slate-700 hover:border-amber-400">
-        <span class="font-bold text-amber-300 block">2. thugom-buugui (Thu gom & Zalo OA)</span>
+        <span class="font-bold text-amber-300 block">2. thugom-buugui (Thu gom Cụm Vinh & Zalo OA)</span>
         <span class="text-[10px] text-slate-400">Quản lý bưu gửi KHL Vinh, Zalo Mini App & ZNS</span>
       </a>
       <div class="p-3 bg-slate-800 rounded-xl border border-slate-700">
-        <span class="font-bold text-emerald-300 block">3. doisoat-bhxh (Robot Python Đối Soát)</span>
+        <span class="font-bold text-emerald-300 block">3. doisoat-bhxh (Robot Python Đối Soát Cụm)</span>
         <span class="text-[10px] text-slate-400">Tự động tải báo cáo & đối soát D03/D05</span>
       </div>
     </div>
@@ -399,10 +406,10 @@
   <!-- TAB 6: CƠ CẤU -->
   <div id="pageCoCau" class="tab-page">
     <div class="card-navy p-4 mb-4 text-xs space-y-2.5">
-      <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2"><i class="fa-solid fa-sitemap mr-1.5"></i>CƠ CẤU TỔ CHỨC 8 NHÂN VIÊN AI TÁC CHIẾN</h3>
+      <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2"><i class="fa-solid fa-sitemap mr-1.5"></i>CƠ CẤU TỔ CHỨC CỤM VINH & 8 NHÂN VIÊN AI</h3>
       <div class="p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl">
-        <span class="font-bold text-amber-400 block">👑 CHỦ TỊCH / GIÁM ĐỐC: Phạm Bá Hào (@Haobdna)</span>
-        <span class="text-[10px] text-slate-300">Chỉ đạo chiến lược & Phê duyệt quyết định quan trọng</span>
+        <span class="font-bold text-amber-400 block">👑 GIÁM ĐỐC CỤM VINH: Phạm Bá Hào (@Haobdna)</span>
+        <span class="text-[10px] text-slate-300">Chỉ đạo toàn diện các địa bàn: Thành Vinh, Trường Vinh, Vinh Hưng, Vinh Phú, Vinh Lộc, Cửa Lò</span>
       </div>
       <div class="p-3 bg-blue-900/40 border border-blue-700 rounded-xl ml-3">
         <span class="font-bold text-blue-300 block">⚡ TỔNG CHỈ HUY: Tiểu Đệ (General Commander)</span>
@@ -479,7 +486,7 @@
       'tieu_soat': ['Chạy đối soát BHXH Vinh', 'Kiểm tra lệch cước', 'Xuất báo cáo D03/D05'],
       'tieu_buu': ['Kiểm tra bưu cục KHL Vinh', 'Đôn đốc bưu tá thu gom', 'Bóc tách danh mục 21 huyện xã'],
       'tieu_cham': ['Nhắn Zalo OA đôn đốc 8h', 'Trực CSKH tự động 24/7', 'Bắn tin ZNS nhắc việc'],
-      'tieu_de': ['Tổng hợp báo cáo ngày', 'Kiểm tra tiến độ 8 nhân sự AI', 'Rà soát hệ thống 3PL']
+      'tieu_de': ['Tổng hợp báo cáo ngày Cụm Vinh', 'Kiểm tra tiến độ 8 nhân sự AI', 'Rà soát hệ thống 3PL']
     };
 
     const RESULTS = {
@@ -508,10 +515,10 @@
     function updateServer() {
       const icon = document.getElementById('spinIcon');
       icon.classList.add('fa-spin');
-      showToast('Đang đồng bộ dữ liệu Server...');
+      showToast('Đang đồng bộ dữ liệu Cụm Vinh...');
       setTimeout(() => {
         icon.classList.remove('fa-spin');
-        showToast('Server đã được cập nhật mới nhất!');
+        showToast('Dữ liệu Cụm Vinh đã được cập nhật!');
       }, 1500);
     }
 
