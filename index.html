@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>MUSE COMMAND CENTER - TRUNG TÂM ĐIỀU HÀNH AI</title>
+  <title>MUSE COMMAND CENTER - BƯU ĐIỆN NGHỆ AN</title>
 
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22AI%20Command%20Center%20B%C4%90NA%22%2C%22short_name%22%3A%22CommandCenter%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23060b14%22%2C%22theme_color%22%3A%22%230f172a%22%7D">
 
@@ -65,7 +65,7 @@
   <!-- Toast Notification -->
   <div id="toast" class="toast"><i class="fa-solid fa-circle-check mr-1.5"></i> <span id="toastMsg">Thông báo</span></div>
 
-  <!-- Interactive Task Dispatch & Result Viewer Modal -->
+  <!-- Interactive Task Dispatch Modal -->
   <div id="agentModal" class="modal-overlay" onclick="closeModal(event)">
     <div class="bg-slate-900 border border-amber-500/50 p-5 rounded-2xl max-w-sm w-full shadow-2xl relative" onclick="event.stopPropagation()">
       <button onclick="closeModal()" class="absolute top-3 right-3 text-slate-400 hover:text-white w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
@@ -87,7 +87,7 @@
       </div>
 
       <div id="dispatchBox" class="mb-3">
-        <label class="text-[11px] font-bold text-amber-400 block mb-1"><i class="fa-solid fa-paper-plane mr-1"></i> GIAO VIỆC MỚI CHO NHÂN SỰ NÀY:</label>
+        <label class="text-[11px] font-bold text-amber-400 block mb-1"><i class="fa-solid fa-paper-plane mr-1"></i> GIAO VIỆC TRỰC TIẾP CHO NHÂN SỰ NÀY:</label>
         <textarea id="taskInput" rows="2" placeholder="Gõ lệnh giao việc tại đây..." 
                   class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"></textarea>
       </div>
@@ -102,7 +102,7 @@
 
   <!-- Header -->
   <header class="flex justify-between items-center mb-3">
-    <div onclick="switchAppTab('VanPhong')" class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold border border-slate-700 cursor-pointer">
+    <div onclick="switchAppTab('TrangChu')" class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold border border-slate-700 cursor-pointer">
       <i class="fa-solid fa-bars text-white"></i>
     </div>
     <div onclick="openAgentModal('Chủ Tịch Phạm Bá Hào', 'CHỦ TỊCH & GIÁM ĐỐC', 'Đang trực tiếp chỉ đạo & điều hành bộ máy 8 nhân viên AI tác chiến.', '👑', 'pham_ba_hao.jpg', 'chu_tich')" class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-xs text-slate-900 font-bold shadow-lg cursor-pointer">
@@ -132,11 +132,84 @@
     </div>
   </div>
 
-  <!-- TAB 1: TRANG CHỦ (KPI & OVERVIEW) -->
-  <div id="pageTrangChu" class="tab-page">
-    <div class="card-navy p-4 mb-4">
-      <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-3"><i class="fa-solid fa-chart-pie mr-1.5"></i>TỔNG QUAN TÌNH HÌNH SXKD THÁNG 11/2026</h3>
-      <div class="grid grid-cols-2 gap-3 text-xs">
+  <!-- TAB 1: TRANG CHỦ (ĐƯA BÁO CÁO BCCP LÊN ĐẦU, LOGISTICS LÊN THỨ 2) -->
+  <div id="pageTrangChu" class="tab-page active-page">
+    
+    <!-- 1. BÁO CÁO TỔNG QUAN BCCP (BƯU CHÍNH CHUYỂN PHÁT - ĐẦU TIÊN) -->
+    <div class="card-navy p-4 mb-4 border border-amber-500/40">
+      <div class="flex justify-between items-center mb-3">
+        <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center">
+          <i class="fa-solid fa-chart-line mr-1.5"></i>1. TỔNG QUAN BƯU CHÍNH CHUYỂN PHÁT (BCCP)
+        </h3>
+        <span class="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded">Tháng 11/2026</span>
+      </div>
+
+      <!-- KPI Top Grid -->
+      <div class="grid grid-cols-2 gap-2.5 text-xs mb-3">
+        <div class="bg-slate-800/90 p-3 rounded-xl border border-slate-700">
+          <span class="text-[10px] text-slate-400 block font-medium">Tổng Doanh Thu BCCP</span>
+          <span class="text-lg font-black text-amber-400 block mt-0.5">7.16 Tỷ <small class="text-[10px] text-emerald-400">▲ +3.2%</small></span>
+          <span class="text-[9px] text-slate-500">Kỳ trước: 6.94 tỷ</span>
+        </div>
+        <div class="bg-slate-800/90 p-3 rounded-xl border border-slate-700">
+          <span class="text-[10px] text-slate-400 block font-medium">Tổng Sản Lượng Bưu Gửi</span>
+          <span class="text-lg font-black text-cyan-400 block mt-0.5">288.032 <small class="text-[10px] text-emerald-400">bưu gửi</small></span>
+          <span class="text-[9px] text-slate-500">Kỳ trước: 283.289</span>
+        </div>
+        <div class="bg-slate-800/90 p-3 rounded-xl border border-slate-700">
+          <span class="text-[10px] text-slate-400 block font-medium">Doanh Thu Ngày 23/11</span>
+          <span class="text-base font-black text-emerald-400 block mt-0.5">440,6 Tr <small class="text-[9px] text-emerald-400">▲ +300%</small></span>
+          <span class="text-[9px] text-slate-500">Sản lượng: 16.903 đơn/ngày</span>
+        </div>
+        <div class="bg-slate-800/90 p-3 rounded-xl border border-slate-700">
+          <span class="text-[10px] text-slate-400 block font-medium">Đơn Giá Bình Quân</span>
+          <span class="text-base font-black text-purple-300 block mt-0.5">15.827 đ/kg</span>
+          <span class="text-[9px] text-slate-500">Khối lượng: 452.559 kg</span>
+        </div>
+      </div>
+
+      <!-- Khách Trọng Yếu & Khách Cảnh Báo -->
+      <div class="grid grid-cols-2 gap-2 text-xs mb-3">
+        <div class="bg-amber-950/40 p-2.5 rounded-xl border border-amber-800/50">
+          <p class="text-[10px] text-amber-400 font-bold"><i class="fa-solid fa-star mr-1"></i> Khách Trọng Yếu: <span class="text-white text-xs">194 khách</span></p>
+          <p class="text-[10px] text-slate-400 mt-0.5">Chiếm 70% tổng doanh thu</p>
+        </div>
+        <div class="bg-red-950/40 p-2.5 rounded-xl border border-red-800/50">
+          <p class="text-[10px] text-red-400 font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Khách Giảm Mạnh: <span class="text-white text-xs">622 khách</span></p>
+          <p class="text-[10px] text-slate-400 mt-0.5">Giảm ≥ 20% so với kỳ trước</p>
+        </div>
+      </div>
+
+      <!-- Cơ cấu Doanh thu Nhóm dịch vụ (TMĐT vs BCTT) -->
+      <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 text-[11px] space-y-2">
+        <div class="flex justify-between items-center">
+          <span class="font-bold text-white"><i class="fa-solid fa-cart-shopping text-cyan-400 mr-1.5"></i>TMĐT (Thương Mại Điện Tử):</span>
+          <span class="font-black text-cyan-400">3.84 Tỷ (53.7% tỷ trọng)</span>
+        </div>
+        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+          <div class="bg-cyan-400 h-full" style="width: 53.7%"></div>
+        </div>
+
+        <div class="flex justify-between items-center pt-1">
+          <span class="font-bold text-white"><i class="fa-solid fa-envelope text-blue-400 mr-1.5"></i>BCTT (Bưu Chính Truyền Thống):</span>
+          <span class="font-black text-blue-400">2.56 Tỷ (35.8% tỷ trọng)</span>
+        </div>
+        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+          <div class="bg-blue-400 h-full" style="width: 35.8%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. BÁO CÁO LOGISTICS & 3PL (THỨ THU HAI) -->
+    <div class="card-navy p-4 mb-16 border border-blue-800">
+      <div class="flex justify-between items-center mb-3">
+        <h3 class="text-xs font-bold text-blue-400 uppercase tracking-wider flex items-center">
+          <i class="fa-solid fa-truck-ramp-box mr-1.5"></i>2. TỔNG QUAN LOGISTICS & VẬN TẢI 3PL
+        </h3>
+        <span class="text-[10px] bg-blue-500/20 text-blue-300 font-bold px-2 py-0.5 rounded">Vận tải & Kho</span>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2.5 text-xs">
         <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
           <p class="text-[10px] text-slate-400">Doanh Thu 3PL Logistics</p>
           <p class="text-base font-black text-emerald-400 mt-1">185.4M VNĐ</p>
@@ -150,15 +223,16 @@
           <p class="text-base font-black text-amber-400 mt-1">9 Chuyến</p>
         </div>
         <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
-          <p class="text-[10px] text-slate-400">Tỷ Lệ Báo Cáo KPI Đúng Hạn</p>
-          <p class="text-base font-black text-purple-400 mt-1">98.5%</p>
+          <p class="text-[10px] text-slate-400">Biên Lợi Nhuận Gộp 3PL</p>
+          <p class="text-base font-black text-purple-400 mt-1">22.4% <small class="text-[9px] text-emerald-400">>= 6%</small></p>
         </div>
       </div>
     </div>
+
   </div>
 
-  <!-- TAB 2: VĂN PHÒNG (2D VIRTUAL OFFICE - ACTIVE PAGE) -->
-  <div id="pageVanPhong" class="tab-page active-page">
+  <!-- TAB 2: VĂN PHÒNG (2D VIRTUAL OFFICE) -->
+  <div id="pageVanPhong" class="tab-page">
     <div class="card-navy p-4 mb-5 shadow-2xl">
       <div class="flex justify-between items-center mb-3">
         <h2 class="text-xs font-bold text-amber-400 uppercase tracking-wider">VĂN PHÒNG LÀM VIỆC (BẤM ĐỂ GIAO VIỆC & XEM KẾT QUẢ)</h2>
@@ -256,7 +330,7 @@
     </div>
   </div>
 
-  <!-- TAB 3: DUNG LƯỢNG (QUOTA & SYSTEM MONITOR) -->
+  <!-- TAB 3: DUNG LƯỢNG -->
   <div id="pageDungLuong" class="tab-page">
     <div class="card-navy p-4 mb-4 text-xs space-y-3">
       <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2"><i class="fa-solid fa-bolt mr-1.5"></i>GIÁM SÁT DUNG LƯỢNG & TÀI NGUYÊN AN TOÀN</h3>
@@ -284,7 +358,7 @@
     </div>
   </div>
 
-  <!-- TAB 4: DỰ ÁN (PROJECTS HUB) -->
+  <!-- TAB 4: DỰ ÁN -->
   <div id="pageDuAn" class="tab-page">
     <div class="card-navy p-4 mb-4 text-xs space-y-2.5">
       <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2"><i class="fa-solid fa-folder-open mr-1.5"></i>DANH SÁCH 5 DỰ ÁN CORE TRÊN GITHUB</h3>
@@ -303,7 +377,7 @@
     </div>
   </div>
 
-  <!-- TAB 5: KÊNH (CHANNELS) -->
+  <!-- TAB 5: KÊNH -->
   <div id="pageKenh" class="tab-page">
     <div class="card-navy p-4 mb-4 text-xs space-y-2.5">
       <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2"><i class="fa-solid fa-comments mr-1.5"></i>TRẠNG THÁI KÊNH KẾT NỐI TƯƠNG TÁC</h3>
@@ -322,7 +396,7 @@
     </div>
   </div>
 
-  <!-- TAB 6: CƠ CẤU (AI SQUAD ORG CHART) -->
+  <!-- TAB 6: CƠ CẤU -->
   <div id="pageCoCau" class="tab-page">
     <div class="card-navy p-4 mb-4 text-xs space-y-2.5">
       <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2"><i class="fa-solid fa-sitemap mr-1.5"></i>CƠ CẤU TỔ CHỨC 8 NHÂN VIÊN AI TÁC CHIẾN</h3>
@@ -346,7 +420,7 @@
     </div>
   </div>
 
-  <!-- TAB 7: CÀI ĐẶT (SETTINGS) -->
+  <!-- TAB 7: CÀI ĐẶT -->
   <div id="pageCaiDat" class="tab-page">
     <div class="card-navy p-4 mb-4 text-xs space-y-3">
       <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2"><i class="fa-solid fa-gear mr-1.5"></i>CÀI ĐẶT CẤU HÌNH HỆ THỐNG</h3>
@@ -363,11 +437,11 @@
 
   <!-- Bottom Navigation Bar (App Bar) -->
   <div class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 py-2.5 px-4 max-w-md mx-auto sm:max-w-lg flex justify-between text-[11px] text-slate-400 z-50">
-    <div id="tabTrangChu" class="tab-btn flex flex-col items-center cursor-pointer hover:text-white" onclick="switchAppTab('TrangChu')">
+    <div id="tabTrangChu" class="tab-btn active-tab flex flex-col items-center cursor-pointer" onclick="switchAppTab('TrangChu')">
       <i class="fa-solid fa-house text-sm"></i>
       <span class="mt-0.5">Trang chủ</span>
     </div>
-    <div id="tabVanPhong" class="tab-btn active-tab flex flex-col items-center cursor-pointer" onclick="switchAppTab('VanPhong')">
+    <div id="tabVanPhong" class="tab-btn flex flex-col items-center cursor-pointer hover:text-white" onclick="switchAppTab('VanPhong')">
       <i class="fa-solid fa-building text-sm"></i>
       <span class="mt-0.5">Văn phòng</span>
     </div>
@@ -500,7 +574,6 @@
     }
 
     function switchAppTab(tabKey) {
-      // Hide all pages
       document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active-page'));
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab'));
 
