@@ -52,7 +52,7 @@
       z-index: 9999; display: none; transition: all 0.3s ease;
     }
     .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(6px);
+      position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(6px);
       z-index: 9000; display: none; items-center: center; justify-content: center; padding: 16px;
     }
   </style>
@@ -62,9 +62,9 @@
   <!-- Toast Notification -->
   <div id="toast" class="toast"><i class="fa-solid fa-circle-check mr-1.5"></i> <span id="toastMsg">Thông báo</span></div>
 
-  <!-- Interactive Task Dispatch Modal -->
+  <!-- Interactive Task Dispatch & Result Viewer Modal -->
   <div id="agentModal" class="modal-overlay" onclick="closeModal(event)">
-    <div class="bg-slate-900 border border-amber-500/40 p-5 rounded-2xl max-w-sm w-full shadow-2xl relative" onclick="event.stopPropagation()">
+    <div class="bg-slate-900 border border-amber-500/50 p-5 rounded-2xl max-w-sm w-full shadow-2xl relative" onclick="event.stopPropagation()">
       <button onclick="closeModal()" class="absolute top-3 right-3 text-slate-400 hover:text-white w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
         <i class="fa-solid fa-xmark"></i>
       </button>
@@ -77,15 +77,17 @@
         </div>
       </div>
 
-      <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700/50 mb-3 text-xs">
-        <p class="text-slate-400 font-medium mb-1">Trạng thái hiện tại:</p>
-        <p id="modalDesc" class="text-white font-semibold leading-relaxed"></p>
+      <!-- Result View Section (Sản phẩm AI đã làm xong) -->
+      <div class="bg-slate-800/90 p-3 rounded-xl border border-amber-500/30 mb-3 text-xs">
+        <p class="text-amber-400 font-bold mb-1 flex items-center"><i class="fa-solid fa-file-circle-check mr-1.5"></i>SẢN PHẨM / KẾT QUẢ GẦN NHẤT:</p>
+        <p id="modalResultText" class="text-slate-200 leading-relaxed font-medium mb-2"></p>
+        <div id="modalResultAction" class="pt-1 border-t border-slate-700/60"></div>
       </div>
 
       <!-- Task Dispatch Input Form -->
       <div id="dispatchBox" class="mb-3">
-        <label class="text-[11px] font-bold text-amber-400 block mb-1"><i class="fa-solid fa-paper-plane mr-1"></i> GIAO VIỆC TRỰC TIẾP CHO NHÂN SỰ NÀY:</label>
-        <textarea id="taskInput" rows="2" placeholder="Gõ lệnh giao việc tại đây... (Ví dụ: Soạn công văn chỉ đạo / Kiểm tra cước xe tải / Báo cáo Zalo OA)..." 
+        <label class="text-[11px] font-bold text-amber-400 block mb-1"><i class="fa-solid fa-paper-plane mr-1"></i> GIAO VIỆC MỚI CHO NHÂN SỰ NÀY:</label>
+        <textarea id="taskInput" rows="2" placeholder="Gõ lệnh giao việc tại đây..." 
                   class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"></textarea>
       </div>
 
@@ -104,7 +106,7 @@
     <div onclick="showToast('Mở Menu Điều Hành')" class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold border border-slate-700 cursor-pointer">
       <i class="fa-solid fa-bars text-white"></i>
     </div>
-    <div onclick="openAgentModal('Chủ Tịch Phạm Bá Hào', 'CHỦ TỊCH & GIÁM ĐỐC', 'Đang trực tiếp chỉ đạo & điều hành bộ máy 8 nhân viên AI tác chiến tại Bưu điện Thành Vinh.', '👑', 'pham_ba_hao.jpg', 'tieu_de')" class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-xs text-slate-900 font-bold shadow-lg cursor-pointer">
+    <div onclick="openAgentModal('Chủ Tịch Phạm Bá Hào', 'CHỦ TỊCH & GIÁM ĐỐC', 'Đang trực tiếp chỉ đạo & điều hành bộ máy 8 nhân viên AI tác chiến.', '👑', 'pham_ba_hao.jpg', 'chu_tich')" class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-xs text-slate-900 font-bold shadow-lg cursor-pointer">
       🐱
     </div>
     <div onclick="showToast('Cài đặt hệ thống')" class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold border border-slate-700 cursor-pointer">
@@ -134,7 +136,7 @@
   <!-- VĂN PHÒNG LÀM VIỆC (2D Chibi Visual Office Room) -->
   <div class="card-navy p-4 mb-5 shadow-2xl">
     <div class="flex justify-between items-center mb-3">
-      <h2 class="text-xs font-bold text-amber-400 uppercase tracking-wider">VĂN PHÒNG LÀM VIỆC (BẤM ĐỂ GIAO VIỆC)</h2>
+      <h2 class="text-xs font-bold text-amber-400 uppercase tracking-wider">VĂN PHÒNG LÀM VIỆC (BẤM ĐỂ GIAO VIỆC & XEM KẾT QUẢ)</h2>
       <button onclick="showToast('Mở Kênh Chat Nội Bộ')" class="text-[11px] bg-slate-800 text-slate-300 px-3 py-1 rounded-full border border-slate-700 hover:border-amber-400">
         <i class="fa-solid fa-comment mr-1 text-amber-400"></i> Kênh chat
       </button>
@@ -149,7 +151,7 @@
       <div class="absolute bottom-2 right-2 text-xl">🌳</div>
 
       <!-- 1. Ghế Chủ Tịch (Real Photo Avatar of Phạm Bá Hào) -->
-      <div class="chibi-char" style="top: 25px; left: 42%;" onclick="openAgentModal('Đại Ca Phạm Bá Hào', 'CHỦ TỊCH / GIÁM ĐỐC', 'Giám đốc Bưu điện Thành Vinh • Đang chỉ đạo toàn bộ bộ máy 8 nhân viên AI.', '👑', 'pham_ba_hao.jpg', 'chu_tich')">
+      <div class="chibi-char" style="top: 25px; left: 42%;" onclick="openAgentModal('Đại Ca Phạm Bá Hào', 'CHỦ TỊCH / GIÁM ĐỐC', 'Đang chỉ đạo toàn bộ bộ máy 8 nhân viên AI tác chiến.', '👑', 'pham_ba_hao.jpg', 'chu_tich')">
         <div class="w-12 h-12 rounded-full border-2 border-amber-400 overflow-hidden shadow-xl bg-slate-900">
           <img src="pham_ba_hao.jpg" alt="Chủ tịch Phạm Bá Hào" class="w-full h-full object-cover">
         </div>
@@ -157,37 +159,87 @@
       </div>
 
       <!-- 2. Bàn CEO (Tiểu Đệ) -->
-      <div class="chibi-char" style="top: 85px; left: 18%;" onclick="openAgentModal('Tiểu Đệ', 'TỔNG CHỈ HUY / CEO', 'Giám sát 8 nhân viên AI & Kiểm soát chất lượng báo cáo cho Chủ tịch.', '⚡', null, 'tieu_de')">
+      <div class="chibi-char" style="top: 85px; left: 18%;" onclick="openAgentModal('Tiểu Đệ', 'TỔNG CHỈ HUY / CEO', 'Đã mã hóa CSDL pgcrypto, kết nối Zalo OA, đẩy code tms-web & điều phối 8 AI.', '⚡', null, 'tieu_de')">
         <span class="text-2xl drop-shadow-md">🐱💻</span>
         <span class="badge-tag mt-1">BÀN CEO (Tiểu Đệ)</span>
       </div>
 
       <!-- 3. Khu Họp (Tiểu Tham) -->
-      <div class="chibi-char" style="top: 110px; right: 12%;" onclick="openAgentModal('Tiểu Tham', 'THAM MƯU & KẾ HOẠCH', 'Chuyên trách soạn thảo văn bản, kế hoạch & thông báo chỉ đạo chuẩn Nghị định 30.', '✍️', null, 'tieu_tham')">
+      <div class="chibi-char" style="top: 110px; right: 12%;" onclick="openAgentModal('Tiểu Tham', 'THAM MƯU & KẾ HOẠCH', 'Đã xuất 5 tệp Word Đề tài Sáng kiến 2026 & Thông báo KPI Tháng 12 (.docx chuẩn NĐ 30).', '✍️', null, 'tieu_tham')">
         <span class="text-2xl drop-shadow-md">🐯📋</span>
         <span class="badge-tag mt-1">KHU HỌP (Tiểu Tham)</span>
       </div>
 
       <!-- 4. Kênh Trung (Tiểu Vận) -->
-      <div class="chibi-char" style="bottom: 20px; left: 38%;" onclick="openAgentModal('Tiểu Vận', '3PL VẬN TẢI & XE TẢI', 'Chuyên trách luồng mua bán cước, theo dõi 18 biển số xe đối tác & mốc chứng từ POD.', '🚛', null, 'tieu_van')">
+      <div class="chibi-char" style="bottom: 20px; left: 38%;" onclick="openAgentModal('Tiểu Vận', '3PL VẬN TẢI & XE TẢI', 'Đã nâng cấp tms-web với Kanban 3PL, Bảng cước & theo dõi 18 biển số xe đối tác.', '🚛', null, 'tieu_van')">
         <span class="text-2xl drop-shadow-md">🦊🚛</span>
         <span class="badge-tag mt-1">KÊNH TRUNG (Tiểu Vận)</span>
       </div>
 
       <!-- 5. Kênh Nhật (Tiểu Soát) -->
-      <div class="chibi-char" style="bottom: 15px; left: 8%;" onclick="openAgentModal('Tiểu Soát', 'ROBOT PYTHON ĐỐI SOÁT', 'Chuyên trách chạy script Python/Polars đối soát dữ liệu thu BHXH/BHYT & kiểm soát dòng tiền.', '⚙️', null, 'tieu_soat')">
+      <div class="chibi-char" style="bottom: 15px; left: 8%;" onclick="openAgentModal('Tiểu Soát', 'ROBOT PYTHON ĐỐI SOÁT', 'Robot Python đã hoàn tất đối soát số liệu thu BHXH/BHYT đêm qua (22:46).', '⚙️', null, 'tieu_soat')">
         <span class="text-2xl drop-shadow-md">🐶⚙️</span>
         <span class="badge-tag mt-1">KÊNH NHẬT (Tiểu Soát)</span>
       </div>
 
       <!-- 6. Kênh Anh (Tiểu Bưu) -->
-      <div class="chibi-char" style="bottom: 15px; right: 8%;" onclick="openAgentModal('Tiểu Bưu', 'BƯU GỬI & THU GOM', 'Chuyên trách quản lý bưu cục, bưu gửi & điều bưu tá thu gom tận nhà.', '📦', null, 'tieu_buu')">
+      <div class="chibi-char" style="bottom: 15px; right: 8%;" onclick="openAgentModal('Tiểu Bưu', 'BƯU GỬI & THU GOM', 'Đang quản lý danh mục bưu cục KHL Vinh & bưu tá thu gom hiện trường.', '📦', null, 'tieu_buu')">
         <span class="text-2xl drop-shadow-md">🐻📦</span>
         <span class="badge-tag mt-1">KÊNH ANH (Tiểu Bưu)</span>
       </div>
     </div>
     
-    <p class="text-[11px] text-slate-400 text-center mt-3 font-medium">Bấm trực tiếp vào nhân vật AI để giao việc 1-Chạm.</p>
+    <p class="text-[11px] text-slate-400 text-center mt-3 font-medium">Bấm vào nhân vật AI để Giao việc & Xem sản phẩm kết quả.</p>
+  </div>
+
+  <!-- BẢNG KẾT QUẢ & SẢN PHẨM AI ĐÃ HOÀN THÀNH (AI DELIVERABLES HUB) -->
+  <div class="card-navy p-4 rounded-2xl mb-5 shadow-xl">
+    <div class="flex justify-between items-center mb-3">
+      <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider"><i class="fa-solid fa-folder-tree mr-1.5"></i>SẢN PHẨM & KẾT QUẢ AI ĐÃ HOÀN THÀNH</h3>
+      <span class="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded">Tải về / Xem ngay</span>
+    </div>
+
+    <div class="space-y-2 text-xs">
+      <div class="p-2.5 bg-slate-800/80 rounded-xl border border-slate-700/60 flex justify-between items-center">
+        <div>
+          <span class="font-bold text-purple-300 block">✍️ 5 File Word Đề Tài Sáng Kiến 2026 (.docx)</span>
+          <span class="text-[10px] text-slate-400">Chuẩn Nghị định 30 • Đầy đủ 100% nội dung & hình ảnh</span>
+        </div>
+        <button onclick="showToast('Đã tải 5 file Word Sáng kiến 2026')" class="bg-purple-600 text-white font-bold px-2.5 py-1 rounded-lg text-[10px]">
+          <i class="fa-solid fa-download"></i> Tải về
+        </button>
+      </div>
+
+      <div class="p-2.5 bg-slate-800/80 rounded-xl border border-slate-700/60 flex justify-between items-center">
+        <div>
+          <span class="font-bold text-cyan-300 block">🚛 Giao Diện TMS 3PL Kanban & Xe Đối Tác</span>
+          <span class="text-[10px] text-slate-400">Quản lý theo Biển số xe & Cảnh báo lợi nhuận gộp >= 6%</span>
+        </div>
+        <a href="https://tms-web-production-bc85.up.railway.app/" target="_blank" class="bg-cyan-600 text-white font-bold px-2.5 py-1 rounded-lg text-[10px] inline-block">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> Mở Web
+        </a>
+      </div>
+
+      <div class="p-2.5 bg-slate-800/80 rounded-xl border border-slate-700/60 flex justify-between items-center">
+        <div>
+          <span class="font-bold text-emerald-300 block">⚙️ Kết Quả Robot Python Đối Soát BHXH/BHYT</span>
+          <span class="text-[10px] text-slate-400">Đã chạy thành công 100% đêm qua lúc 22:46:54</span>
+        </div>
+        <button onclick="showToast('Mở nhật ký chạy Robot BHXH')" class="bg-emerald-600 text-white font-bold px-2.5 py-1 rounded-lg text-[10px]">
+          <i class="fa-solid fa-list-check"></i> Xem Log
+        </button>
+      </div>
+
+      <div class="p-2.5 bg-slate-800/80 rounded-xl border border-slate-700/60 flex justify-between items-center">
+        <div>
+          <span class="font-bold text-rose-300 block">🎬 Bộ 7 Bài PR & 7 Banner 3PL Logistics</span>
+          <span class="text-[10px] text-slate-400">Thiết kế chuẩn màu Bưu điện Vàng - Xanh 2K/4K</span>
+        </div>
+        <button onclick="showToast('Mở thư mục 7 Banner Quảng cáo 3PL')" class="bg-rose-600 text-white font-bold px-2.5 py-1 rounded-lg text-[10px]">
+          <i class="fa-solid fa-images"></i> Xem Ảnh
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- CHỦ TỊCH ĐI TỚI Navigation Grid -->
@@ -202,36 +254,6 @@
       <button onclick="selectDesk(this, 'Tiểu Tham', 'THAM MƯU KẾ HOẠCH', 'Soạn thảo văn bản chỉ đạo & thông báo', '✍️', null, 'tieu_tham')" class="nav-btn">Khu Họp (Tiểu Tham)</button>
       <button onclick="showToast('Chủ tịch tới Khu Nghỉ')" class="nav-btn">Khu Nghỉ</button>
       <button onclick="showToast('Mở Bảng Nhiệm Vụ')" class="nav-btn">Bảng Nhiệm Vụ</button>
-    </div>
-  </div>
-
-  <!-- BẢNG HOẠT ĐỘNG - AI ĐANG LÀM GÌ REALTIME -->
-  <div class="card-navy p-4 rounded-2xl mb-16 shadow-xl">
-    <div class="flex justify-between items-center mb-3">
-      <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider">BẢNG HOẠT ĐỘNG — AI ĐANG LÀM GÌ</h3>
-      <span class="text-[10px] text-emerald-400 font-bold"><i class="fa-solid fa-signal mr-1"></i>Realtime Log</span>
-    </div>
-    <div id="activityLog" class="space-y-2.5 text-xs">
-      <div class="flex justify-between border-b border-slate-800 pb-2">
-        <span class="font-bold text-white">Chủ tịch (Phạm Bá Hào)</span>
-        <span class="text-slate-300">Đang điều hành — 0 việc chờ duyệt</span>
-      </div>
-      <div class="flex justify-between border-b border-slate-800 pb-2">
-        <span class="font-bold text-amber-400">CEO · Tiểu Đệ</span>
-        <span class="text-slate-300">Đang giám sát 8 nhân viên AI tác chiến</span>
-      </div>
-      <div class="flex justify-between border-b border-slate-800 pb-2">
-        <span class="font-bold text-purple-400">Tiểu Tham · Kế Hoạch</span>
-        <span class="text-slate-300">Đã xuất file Word KPI Tháng 12 (.docx)</span>
-      </div>
-      <div class="flex justify-between border-b border-slate-800 pb-2">
-        <span class="font-bold text-cyan-400">Tiểu Vận · 3PL Xe Tải</span>
-        <span class="text-slate-300">Đang theo dõi 18 biển số xe đối tác</span>
-      </div>
-      <div class="flex justify-between">
-        <span class="font-bold text-emerald-400">Tiểu Soát · Robot Python</span>
-        <span class="text-slate-300">Robot đã chạy xong đối soát BHXH</span>
-      </div>
     </div>
   </div>
 
@@ -276,10 +298,19 @@
     const PRESETS = {
       'tieu_tham': ['Soạn thông báo KPI Tháng 12', 'Lập kế hoạch cao điểm Tết', 'Soạn công văn chỉ đạo BĐX'],
       'tieu_van': ['Kiểm tra 18 biển số xe 3PL', 'Rà soát trễ nộp POD', 'Xử lý báo giá chuyến BM-06'],
-      'tieu_soat': ['Chạy đối soát BHXH Vinh', 'Kiểm tra lệch cước bảng kê', 'Xuất báo cáo thu D03/D05'],
+      'tieu_soat': ['Chạy đối soát BHXH Vinh', 'Kiểm tra lệch cước', 'Xuất báo cáo D03/D05'],
       'tieu_buu': ['Kiểm tra bưu cục KHL Vinh', 'Đôn đốc bưu tá thu gom', 'Bóc tách danh mục 21 huyện xã'],
       'tieu_cham': ['Nhắn Zalo OA đôn đốc 8h', 'Trực CSKH tự động 24/7', 'Bắn tin ZNS nhắc việc'],
       'tieu_de': ['Tổng hợp báo cáo ngày', 'Kiểm tra tiến độ 8 nhân sự AI', 'Rà soát hệ thống 3PL']
+    };
+
+    const RESULTS = {
+      'tieu_tham': 'Đã xuất 5 tệp Word Sáng kiến 2026 (.docx chuẩn NĐ 30) & Thông báo KPI Tháng 12.',
+      'tieu_van': 'Đã cập nhật tms-web: Giao diện 3PL Kanban, quản lý theo Biển số xe & Cảnh báo margin < 6%.',
+      'tieu_soat': 'Robot Python đã chạy thành công 100% đối soát số liệu BHXH đêm qua lúc 22:46:54.',
+      'tieu_buu': 'Đang quản lý 170 tệp bưu gửi, danh mục bưu cục KHL Vinh & bưu tá thu gom hiện trường.',
+      'tieu_cham': 'Đã kết nối Zalo OA, thiết lập ZNS nhac_viec & daemon đôn đốc nhân viên Lựa chọn 2.',
+      'tieu_de': 'Đã hoàn tất mã hóa CSDL pgcrypto, đồng bộ GitHub, kết nối Zalo & dựng Mobile App Command Center.'
     };
 
     function updateClock() {
@@ -315,6 +346,11 @@
       document.getElementById('modalDesc').textContent = desc;
       document.getElementById('taskInput').value = '';
 
+      // Set Result text
+      const resText = RESULTS[currentActiveAgentId] || 'Đã hoàn tất nhiệm vụ gần nhất.';
+      document.getElementById('modalResultText').textContent = resText;
+      document.getElementById('modalResultAction').innerHTML = `<button onclick="showToast('Đang mở kết quả của ${name}...')" class="bg-amber-500 text-slate-950 font-bold px-3 py-1 rounded-lg text-[10px]"><i class="fa-solid fa-eye mr-1"></i> Xem Chi Tiết Kết Quả</button>`;
+
       const iconBox = document.getElementById('modalIcon');
       if (imgUrl) {
         iconBox.innerHTML = `<img src="${imgUrl}" class="w-full h-full object-cover rounded-xl">`;
@@ -348,13 +384,6 @@
       }
 
       showToast('Đang gửi lệnh giao việc cho ' + currentActiveAgentName + '...');
-
-      // Add to activity table
-      const actLog = document.getElementById('activityLog');
-      const newRow = document.createElement('div');
-      newRow.className = 'flex justify-between border-b border-slate-800 pb-2 bg-amber-500/10 p-1.5 rounded';
-      newRow.innerHTML = `<span class="font-bold text-amber-400">${currentActiveAgentName}</span><span class="text-amber-300 font-semibold">${input} (Đang làm...)</span>`;
-      actLog.insertBefore(newRow, actLog.firstChild);
 
       closeModal();
       setTimeout(() => {
