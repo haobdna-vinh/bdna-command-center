@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MUSE COMMAND CENTER - TRUNG TÂM ĐIỀU HÀNH</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #060b14; color: #ffffff; margin: 0; padding: 12px; }
+    .gold-btn { background: linear-gradient(180deg, #fcd34d 0%, #f59e0b 100%); color: #0f172a; font-weight: 800; border-radius: 9999px; }
+    .card-navy { background-color: #0f172a; border: 1px solid #1e293b; border-radius: 20px; }
+    .nav-btn { background-color: #1e293b; color: #e2e8f0; padding: 12px 16px; border-radius: 14px; font-size: 13px; font-weight: 600; text-align: center; border: 1px solid #334155; }
+    .nav-btn.active { background-color: #1e293b; color: #f59e0b; border-color: #f59e0b; }
+    
+    /* Chibi 2D Virtual Office Room Canvas */
+    .office-room {
+      background: linear-gradient(180deg, #fce7f3 0%, #fbcfe8 100%);
+      border: 3px solid #0284c7;
+      border-radius: 24px;
+      position: relative;
+      padding: 16px;
+      min-height: 260px;
+    }
+    .badge-tag {
+      background: #fdf2f8;
+      border: 1px solid #f472b6;
+      border-radius: 6px;
+      padding: 2px 6px;
+      font-size: 9px;
+      font-weight: 800;
+      color: #9d174d;
+      white-space: nowrap;
+    }
+    .chibi-char {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: absolute;
+    }
+  </style>
+</head>
+<body class="max-w-md mx-auto sm:max-w-lg">
+
+  <!-- Header -->
+  <header class="flex justify-between items-center mb-3">
+    <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold border border-slate-700">
+      <i class="fa-solid fa-bars text-white"></i>
+    </div>
+    <div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-xs text-slate-900 font-bold shadow-lg">
+      🐱
+    </div>
+    <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold border border-slate-700">
+      <i class="fa-solid fa-ellipsis text-white"></i>
+    </div>
+  </header>
+
+  <!-- Title Banner -->
+  <div class="flex justify-between items-center mb-4 px-1">
+    <div class="flex items-center space-x-3">
+      <div class="w-11 h-11 rounded-full border-2 border-amber-400/80 flex items-center justify-center bg-slate-900 text-amber-400 font-black text-sm shadow-lg">
+        NTP
+      </div>
+      <div>
+        <h1 class="text-base font-black tracking-wide text-white">MUSE COMMAND CENTER</h1>
+        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">TRUNG TÂM ĐIỀU HÀNH • BƯU ĐIỆN NGHỆ AN</p>
+      </div>
+    </div>
+    <div class="text-right">
+      <span class="text-xs font-mono text-slate-300 block mb-1">07:53:25</span>
+      <button class="gold-btn px-3.5 py-1.5 text-xs shadow-md">
+        <i class="fa-solid fa-rotate-right mr-1"></i> Update Server
+      </button>
+    </div>
+  </div>
+
+  <!-- VĂN PHÒNG LÀM VIỆC (2D Chibi Visual Office Room) -->
+  <div class="card-navy p-4 mb-5 shadow-2xl">
+    <div class="flex justify-between items-center mb-3">
+      <h2 class="text-xs font-bold text-amber-400 uppercase tracking-wider">VĂN PHÒNG LÀM VIỆC</h2>
+      <span class="text-[11px] bg-slate-800 text-slate-300 px-3 py-1 rounded-full border border-slate-700"><i class="fa-solid fa-comment mr-1 text-amber-400"></i> Kênh chat</span>
+    </div>
+
+    <!-- 2D Chibi Room Graphic -->
+    <div class="office-room shadow-inner">
+      <!-- Light fixture -->
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 text-amber-300 opacity-60 text-lg">💡</div>
+      <!-- Door -->
+      <div class="absolute top-2 right-4 w-8 h-14 bg-purple-700 rounded-t-md border border-purple-500">
+        <div class="w-2 h-2 rounded-full bg-amber-400 absolute top-7 left-1"></div>
+      </div>
+      <!-- Tree -->
+      <div class="absolute bottom-2 right-2 text-xl">🌳</div>
+
+      <!-- 1. Ghế Chủ Tịch (Real Photo Avatar of Phạm Bá Hào) -->
+      <div class="chibi-char" style="top: 25px; left: 42%;">
+        <div class="w-12 h-12 rounded-full border-2 border-amber-400 overflow-hidden shadow-xl bg-slate-900">
+          <img src="pham_ba_hao.jpg" alt="Chủ tịch Phạm Bá Hào" class="w-full h-full object-cover">
+        </div>
+        <span class="badge-tag mt-1 shadow">GHẾ CHỦ TỊCH</span>
+      </div>
+
+      <!-- 2. Bàn CEO (Tiểu Đệ - Cat CEO) -->
+      <div class="chibi-char" style="top: 85px; left: 18%;">
+        <span class="text-2xl drop-shadow-md">🐱💻</span>
+        <span class="badge-tag mt-1">BÀN CEO (Tiểu Đệ)</span>
+      </div>
+
+      <!-- 3. Khu Họp (Tiểu Tham - Tiger) -->
+      <div class="chibi-char" style="top: 110px; right: 12%;">
+        <span class="text-2xl drop-shadow-md">🐯📋</span>
+        <span class="badge-tag mt-1">KHU HỌP (Tiểu Tham)</span>
+      </div>
+
+      <!-- 4. Kênh Trung (Tiểu Vận - Fox) -->
+      <div class="chibi-char" style="bottom: 20px; left: 38%;">
+        <span class="text-2xl drop-shadow-md">🦊🚛</span>
+        <span class="badge-tag mt-1">KÊNH TRUNG (Tiểu Vận)</span>
+      </div>
+
+      <!-- 5. Kênh Nhật (Tiểu Soát - Dog) -->
+      <div class="chibi-char" style="bottom: 15px; left: 8%;">
+        <span class="text-2xl drop-shadow-md">🐶⚙️</span>
+        <span class="badge-tag mt-1">KÊNH NHẬT (Tiểu Soát)</span>
+      </div>
+
+      <!-- 6. Kênh Anh (Tiểu Bưu - Bear) -->
+      <div class="chibi-char" style="bottom: 15px; right: 8%;">
+        <span class="text-2xl drop-shadow-md">🐻📦</span>
+        <span class="badge-tag mt-1">KÊNH ANH (Tiểu Bưu)</span>
+      </div>
+    </div>
+    
+    <p class="text-[11px] text-slate-400 text-center mt-3 font-medium">Văn phòng trực tiếp — nhân vật bám trạng thái Hub thật.</p>
+  </div>
+
+  <!-- CHỦ TỊCH ĐI TỚI Navigation Grid -->
+  <div class="mb-5">
+    <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-3">CHỦ TỊCH ĐI TỚI:</h3>
+    <div class="grid grid-cols-2 gap-2.5 text-xs">
+      <button class="nav-btn">Bàn CEO (Tiểu Đệ)</button>
+      <button class="nav-btn">Kênh Nhật (Tiểu Soát)</button>
+      <button class="nav-btn">Kênh Trung (Tiểu Vận)</button>
+      <button class="nav-btn">Kênh Anh (Tiểu Bưu)</button>
+      <button class="nav-btn active">Ghế Chủ Tịch (Đại Ca)</button>
+      <button class="nav-btn">Khu Họp (Tiểu Tham)</button>
+      <button class="nav-btn">Khu Nghỉ</button>
+      <button class="nav-btn">Bảng Nhiệm Vụ</button>
+    </div>
+  </div>
+
+  <!-- BẢNG HOẠT ĐỘNG - AI ĐANG LÀM GÌ -->
+  <div class="card-navy p-4 rounded-2xl mb-16 shadow-xl">
+    <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-3">BẢNG HOẠT ĐỘNG — AI ĐANG LÀM GÌ</h3>
+    <div class="space-y-2.5 text-xs">
+      <div class="flex justify-between border-b border-slate-800 pb-2">
+        <span class="font-bold text-white">Chủ tịch (Phạm Bá Hào)</span>
+        <span class="text-slate-300">Đang điều hành — không có việc chờ duyệt</span>
+      </div>
+      <div class="flex justify-between border-b border-slate-800 pb-2">
+        <span class="font-bold text-amber-400">CEO · Tiểu Đệ</span>
+        <span class="text-slate-300">Đang giám sát 8 nhân viên AI</span>
+      </div>
+      <div class="flex justify-between border-b border-slate-800 pb-2">
+        <span class="font-bold text-purple-400">Tiểu Tham · Kế Hoạch</span>
+        <span class="text-slate-300">Đã xuất file Word KPI Tháng 12 (.docx)</span>
+      </div>
+      <div class="flex justify-between border-b border-slate-800 pb-2">
+        <span class="font-bold text-cyan-400">Tiểu Vận · 3PL Xe Tải</span>
+        <span class="text-slate-300">Đang theo dõi 18 biển số xe đối tác</span>
+      </div>
+      <div class="flex justify-between">
+        <span class="font-bold text-emerald-400">Tiểu Soát · Robot Python</span>
+        <span class="text-slate-300">Robot đã chạy xong đối soát BHXH</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation Bar (App Bar) -->
+  <div class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 py-2.5 px-4 max-w-md mx-auto sm:max-w-lg flex justify-between text-[11px] text-slate-400 z-50">
+    <div class="flex flex-col items-center">
+      <i class="fa-solid fa-house text-sm"></i>
+      <span class="mt-0.5">Trang chủ</span>
+    </div>
+    <div class="flex flex-col items-center text-amber-400 font-bold">
+      <i class="fa-solid fa-building text-sm"></i>
+      <span class="mt-0.5">Văn phòng</span>
+    </div>
+    <div class="flex flex-col items-center">
+      <i class="fa-solid fa-bolt text-sm"></i>
+      <span class="mt-0.5">Dung lượng</span>
+    </div>
+    <div class="flex flex-col items-center relative">
+      <span class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-3.5 h-3.5 text-[9px] flex items-center justify-center font-bold">1</span>
+      <i class="fa-solid fa-folder-open text-sm"></i>
+      <span class="mt-0.5">Dự án</span>
+    </div>
+    <div class="flex flex-col items-center">
+      <i class="fa-solid fa-comments text-sm"></i>
+      <span class="mt-0.5">Kênh</span>
+    </div>
+    <div class="flex flex-col items-center">
+      <i class="fa-solid fa-sitemap text-sm"></i>
+      <span class="mt-0.5">Cơ cấu</span>
+    </div>
+    <div class="flex flex-col items-center">
+      <i class="fa-solid fa-gear text-sm"></i>
+      <span class="mt-0.5">Cài đặt</span>
+    </div>
+  </div>
+
+</body>
+</html>
