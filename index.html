@@ -145,7 +145,7 @@
 
       const resText = RESULTS[currentActiveAgentId] || 'Đã hoàn tất nhiệm vụ gần nhất.';
       document.getElementById('modalResultText').textContent = resText;
-      document.getElementById('modalResultAction').innerHTML = '<button onclick="openLiveChatFromModal('' + currentActiveAgentId + '')" class="bg-amber-500 text-slate-950 font-black px-3.5 py-1.5 rounded-lg text-xs shadow-md active:scale-95 transition-all"><i class="fa-solid fa-comments mr-1"></i> Mở Kênh Chat Trực Tiếp Với ' + name + '</button>';
+      document.getElementById('modalResultAction').innerHTML = '<button onclick="openLiveChatFromModal(\' + currentActiveAgentId + \')" class="bg-amber-500 text-slate-950 font-black px-3.5 py-1.5 rounded-lg text-xs shadow-md active:scale-95 transition-all"><i class="fa-solid fa-comments mr-1"></i> Mở Kênh Chat Trực Tiếp Với ' + name + '</button>';
 
       const iconBox = document.getElementById('modalIcon');
       if (imgUrl) {
@@ -157,7 +157,7 @@
       const presetBox = document.getElementById('presetContainer');
       const list = PRESETS[currentActiveAgentId] || ['Kiểm tra tiến độ', 'Gửi báo cáo'];
       presetBox.innerHTML = list.map(p => 
-        '<button onclick="applyPreset('' + p + '')" class="bg-slate-800 text-amber-300 border border-amber-500/30 px-2.5 py-1.5 rounded-lg text-[11px] hover:bg-amber-500 hover:text-slate-900 transition font-medium active:scale-95">' + p + '</button>'
+        '<button onclick="applyPreset(\' + p + \')" class="bg-slate-800 text-amber-300 border border-amber-500/30 px-2.5 py-1.5 rounded-lg text-[11px] hover:bg-amber-500 hover:text-slate-900 transition font-medium active:scale-95">' + p + '</button>'
       ).join('');
 
       const modal = document.getElementById('agentModal');
