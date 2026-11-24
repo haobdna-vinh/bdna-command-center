@@ -2,19 +2,29 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>MUSE COMMAND CENTER - CỤM VINH</title>
 
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22AI%20Command%20Center%20B%C4%90NA%22%2C%22short_name%22%3A%22CommandCenter%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23060b14%22%2C%22theme_color%22%3A%22%230f172a%22%7D">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #060b14; color: #ffffff; margin: 0; padding: 12px; -webkit-tap-highlight-color: transparent; }
+    * { -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #060b14;
+      color: #ffffff;
+      margin: 0;
+      padding: 12px;
+      padding-bottom: calc(85px + env(safe-area-inset-bottom));
+      touch-action: manipulation;
+    }
     .gold-btn { background: linear-gradient(180deg, #fcd34d 0%, #f59e0b 100%); color: #0f172a; font-weight: 800; border-radius: 9999px; cursor: pointer; }
     .card-navy { background-color: #0f172a; border: 1px solid #1e293b; border-radius: 20px; }
-    .nav-btn { background-color: #1e293b; color: #e2e8f0; padding: 12px 14px; border-radius: 14px; font-size: 13px; font-weight: 600; text-align: center; border: 1px solid #334155; cursor: pointer; transition: all 0.2s; }
-    .nav-btn:active, .nav-btn.active { background-color: #f59e0b; color: #080e18; border-color: #fbbf24; font-weight: 800; transform: scale(0.97); }
+    .nav-btn { background-color: #1e293b; color: #e2e8f0; padding: 10px 12px; border-radius: 14px; font-size: 12px; font-weight: 600; text-align: center; border: 1px solid #334155; cursor: pointer; transition: all 0.2s; user-select: none; }
+    .nav-btn:active, .nav-btn.active { background-color: #f59e0b; color: #080e18; border-color: #fbbf24; font-weight: 800; transform: scale(0.96); }
     
     .office-room {
       background: linear-gradient(180deg, #fce7f3 0%, #fbcfe8 100%);
@@ -22,7 +32,7 @@
       border-radius: 24px;
       position: relative;
       padding: 16px;
-      min-height: 330px;
+      min-height: 340px;
     }
     .badge-tag {
       background: #fdf2f8;
@@ -34,6 +44,7 @@
       color: #9d174d;
       white-space: nowrap;
       cursor: pointer;
+      user-select: none;
     }
     .chibi-char {
       display: flex;
@@ -41,7 +52,9 @@
       align-items: center;
       position: absolute;
       cursor: pointer;
-      transition: transform 0.2s;
+      user-select: none;
+      transition: transform 0.15s ease-out;
+      z-index: 10;
     }
     .chibi-char:active { transform: scale(1.15); }
 
@@ -49,24 +62,245 @@
       position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
       background: #f59e0b; color: #080e18; font-weight: 800; font-size: 12px;
       padding: 10px 18px; border-radius: 9999px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-      z-index: 9999; display: none; transition: all 0.3s ease;
+      z-index: 999999; display: none; transition: all 0.3s ease;
     }
     .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(6px);
-      z-index: 9000; display: none; items-center: center; justify-content: center; padding: 16px;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      z-index: 900000; display: none; align-items: center; justify-content: center; padding: 16px;
     }
     .tab-page { display: none; }
     .tab-page.active-page { display: block; }
     .tab-btn.active-tab { color: #f59e0b; font-weight: bold; }
+    .tab-btn { cursor: pointer; user-select: none; }
   </style>
+
+  <!-- ALL FUNCTIONS IN HEAD TO GUARANTEE AVAILABILITY ON IOS SAFARI PWA -->
+  <script>
+    let currentActiveAgentId = 'tieu_de';
+    let currentActiveAgentName = 'Tiểu Đệ';
+    let currentChatAgent = 'TieuDe';
+
+    const PRESETS = {
+      'tieu_tham': ['Soạn thông báo KPI Tháng 12', 'Lập kế hoạch cao điểm Tết', 'Soạn công văn chỉ đạo BĐX'],
+      'tieu_van': ['Kiểm tra 18 biển số xe 3PL', 'Rà soát trễ nộp POD', 'Xử lý báo giá chuyến BM-06'],
+      'tieu_soat': ['Chạy đối soát BHXH Vinh', 'Kiểm tra lệch cước', 'Xuất báo cáo D03/D05'],
+      'tieu_buu': ['Kiểm tra bưu cục KHL Vinh', 'Đôn đốc bưu tá thu gom', 'Bóc tách danh mục 21 huyện xã'],
+      'tieu_cham': ['Nhắn Zalo OA đôn đốc 8h', 'Trực CSKH tự động 24/7', 'Bắn tin ZNS nhắc việc'],
+      'tieu_de': ['Tổng hợp báo cáo ngày Cụm Vinh', 'Kiểm tra tiến độ 8 nhân sự AI', 'Rà soát hệ thống 3PL']
+    };
+
+    const RESULTS = {
+      'tieu_tham': 'Đã xuất 5 tệp Word Sáng kiến 2026 (.docx chuẩn NĐ 30) & Thông báo KPI Tháng 12.',
+      'tieu_van': 'Đã cập nhật tms-web: Giao diện 3PL Kanban, quản lý theo Biển số xe & Cảnh báo margin < 6%.',
+      'tieu_soat': 'Robot Python đã chạy thành công 100% đối soát số liệu BHXH đêm qua lúc 22:46:54.',
+      'tieu_buu': 'Đang quản lý 170 tệp bưu gửi, danh mục bưu cục KHL Vinh & bưu tá thu gom hiện trường.',
+      'tieu_cham': 'Đã kết nối Zalo OA, thiết lập ZNS nhac_viec & daemon đôn đốc nhân viên Lựa chọn 2.',
+      'tieu_de': 'Đã hoàn tất mã hóa CSDL pgcrypto, đồng bộ GitHub, kết nối Zalo & dựng Mobile App Command Center.'
+    };
+
+    const AGENT_CONFIGS = {
+      'TieuDe': { name: 'Tiểu Đệ (General Commander)', avatar: '🐱', role: 'Tổng chỉ huy điều phối 5 nhân viên AI' },
+      'TieuTham': { name: 'Tiểu Tham (Planning & Directives)', avatar: '🐯', role: 'Tham mưu, lập kế hoạch công tác & soạn thảo văn bản' },
+      'TieuBuu': { name: 'Tiểu Bưu (Parcel & Collection)', avatar: '🐻', role: 'Chuyên trách thugom-buugui, điểm gom & bưu gửi' },
+      'TieuVan': { name: 'Tiểu Vận (3PL Transport & Fleet)', avatar: '🦊', role: 'Chuyên trách tms-web, luồng 3PL & biển số xe' },
+      'TieuSoat': { name: 'Tiểu Soát (Data & Audit)', avatar: '🐶', role: 'Chuyên trách doisoat-bhxh, kiểm soát cước BHXH/BHYT' },
+      'MUSE_ALL': { name: 'Trung Tâm Điều Hành Cụm Vinh', avatar: '🏛️', role: 'Kênh giao việc chung cho Ban Chỉ Huy' }
+    };
+
+    function updateClock() {
+      const el = document.getElementById('clock');
+      if (el) {
+        const now = new Date();
+        el.textContent = now.toTimeString().split(' ')[0];
+      }
+    }
+    setInterval(updateClock, 1000);
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      if (!toast) return;
+      document.getElementById('toastMsg').textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 2500);
+    }
+
+    function updateServer() {
+      const icon = document.getElementById('spinIcon');
+      if (icon) icon.classList.add('fa-spin');
+      showToast('Đang đồng bộ dữ liệu Cụm Vinh...');
+      setTimeout(() => {
+        if (icon) icon.classList.remove('fa-spin');
+        showToast('Dữ liệu Cụm Vinh đã được cập nhật!');
+      }, 1500);
+    }
+
+    function openAgentModal(name, role, desc, icon, imgUrl, agentId) {
+      currentActiveAgentId = agentId || 'tieu_de';
+      currentActiveAgentName = name;
+
+      document.getElementById('modalName').textContent = name;
+      document.getElementById('modalRole').textContent = role;
+      document.getElementById('modalDesc').textContent = desc;
+      document.getElementById('taskInput').value = '';
+
+      const resText = RESULTS[currentActiveAgentId] || 'Đã hoàn tất nhiệm vụ gần nhất.';
+      document.getElementById('modalResultText').textContent = resText;
+      document.getElementById('modalResultAction').innerHTML = '<button onclick="openLiveChatFromModal('' + currentActiveAgentId + '')" class="bg-amber-500 text-slate-950 font-black px-3.5 py-1.5 rounded-lg text-xs shadow-md active:scale-95 transition-all"><i class="fa-solid fa-comments mr-1"></i> Mở Kênh Chat Trực Tiếp Với ' + name + '</button>';
+
+      const iconBox = document.getElementById('modalIcon');
+      if (imgUrl) {
+        iconBox.innerHTML = '<img src="' + imgUrl + '" class="w-full h-full object-cover rounded-xl">';
+      } else {
+        iconBox.innerHTML = icon || '🤖';
+      }
+
+      const presetBox = document.getElementById('presetContainer');
+      const list = PRESETS[currentActiveAgentId] || ['Kiểm tra tiến độ', 'Gửi báo cáo'];
+      presetBox.innerHTML = list.map(p => 
+        '<button onclick="applyPreset('' + p + '')" class="bg-slate-800 text-amber-300 border border-amber-500/30 px-2.5 py-1.5 rounded-lg text-[11px] hover:bg-amber-500 hover:text-slate-900 transition font-medium active:scale-95">' + p + '</button>'
+      ).join('');
+
+      const modal = document.getElementById('agentModal');
+      modal.style.display = 'flex';
+    }
+
+    function applyPreset(txt) {
+      document.getElementById('taskInput').value = txt;
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('agentModal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function submitTask() {
+      const input = document.getElementById('taskInput').value.trim();
+      if (!input) {
+        showToast('Vui lòng gõ nội dung công việc cần giao!');
+        return;
+      }
+
+      showToast('Đang gửi lệnh giao việc cho ' + currentActiveAgentName + '...');
+      closeModal();
+      
+      setTimeout(() => {
+        showToast('Đã kích hoạt! ' + currentActiveAgentName + ' đã nhận việc và đang xử lý ngầm.');
+      }, 1000);
+    }
+
+    function selectDesk(btn, name, role, desc, icon, imgUrl, agentId) {
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      openAgentModal(name, role, desc, icon, imgUrl, agentId);
+    }
+
+    function switchAppTab(tabKey) {
+      document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active-page'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab'));
+
+      const targetPage = document.getElementById('page' + tabKey);
+      const targetBtn = document.getElementById('tab' + tabKey);
+
+      if (targetPage) targetPage.classList.add('active-page');
+      if (targetBtn) targetBtn.classList.add('active-tab');
+
+      showToast('Đã mở Tab: ' + tabKey);
+    }
+
+    function openLiveChatModal(agentKey = 'TieuDe') {
+      currentChatAgent = agentKey;
+      const config = AGENT_CONFIGS[agentKey] || AGENT_CONFIGS['TieuDe'];
+      
+      document.getElementById('chatAgentAvatar').innerText = config.avatar;
+      document.getElementById('chatAgentTitle').innerText = config.name;
+      document.getElementById('chatAgentSubtitle').innerText = config.role;
+      
+      const modal = document.getElementById('liveChatModal');
+      modal.style.display = 'flex';
+      setTimeout(() => {
+        const inp = document.getElementById('chatInputText');
+        if (inp) inp.focus();
+      }, 150);
+    }
+
+    function openLiveChatFromModal(agentId) {
+      closeModal();
+      const keyMap = {
+        'tieu_de': 'TieuDe',
+        'tieu_tham': 'TieuTham',
+        'tieu_buu': 'TieuBuu',
+        'tieu_van': 'TieuVan',
+        'tieu_soat': 'TieuSoat'
+      };
+      openLiveChatModal(keyMap[agentId] || 'TieuDe');
+    }
+
+    function closeLiveChatModal() {
+      const modal = document.getElementById('liveChatModal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function sendLiveChatMessage() {
+      const input = document.getElementById('chatInputText');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const list = document.getElementById('chatMessagesList');
+      const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      const userMsgHtml = '<div class="flex items-start justify-end space-x-2"><div class="bg-amber-500/20 border border-amber-400/40 p-3 rounded-2xl rounded-tr-none text-slate-100 max-w-[85%] shadow-sm"><p class="font-semibold text-amber-300 text-[10px] mb-0.5">Chủ Tịch (Pham Ba Hao)</p><p>' + escapeHtml(text) + '</p><span class="text-[9px] text-slate-400 block mt-1 text-right">' + now + '</span></div></div>';
+      
+      list.insertAdjacentHTML('beforeend', userMsgHtml);
+      input.value = '';
+      list.scrollTop = list.scrollHeight;
+
+      const config = AGENT_CONFIGS[currentChatAgent] || AGENT_CONFIGS['TieuDe'];
+      const indicator = document.getElementById('chatTypingIndicator');
+      document.getElementById('typingAgentName').innerText = config.name + ' đang xử lý...';
+      indicator.style.display = 'flex';
+
+      setTimeout(() => {
+        indicator.style.display = 'none';
+        let responseText = generateAgentResponse(currentChatAgent, text);
+
+        const aiMsgHtml = '<div class="flex items-start space-x-2.5"><div class="w-7 h-7 rounded-full bg-amber-500/20 border border-amber-400/30 flex items-center justify-center text-xs flex-shrink-0">' + config.avatar + '</div><div class="bg-slate-800 border border-slate-700 p-3 rounded-2xl rounded-tl-none text-slate-200 max-w-[85%] shadow-sm"><p class="font-semibold text-amber-300 mb-1">' + config.name + '</p><p>' + responseText + '</p><span class="text-[9px] text-slate-400 block mt-1 text-right">' + now + ' • MUSE AI</span></div></div>';
+        
+        list.insertAdjacentHTML('beforeend', aiMsgHtml);
+        list.scrollTop = list.scrollHeight;
+      }, 1000);
+    }
+
+    function generateAgentResponse(agentKey, prompt) {
+      if (agentKey === 'TieuBuu') {
+        return 'Dạ báo cáo Chủ Tịch, em (Tiểu Bưu) đã ghi nhận lệnh bưu gửi/điểm gom. Hệ thống thugom-buugui đang kiểm tra sản lượng và báo cáo trực tiếp về Telegram cho Chủ Tịch ạ!';
+      } else if (agentKey === 'TieuSoat') {
+        return 'Dạ báo cáo Chủ Tịch, em (Tiểu Soát) đã tiếp nhận công việc đối soát BHXH/BHYT Cụm Vinh và đang cho Polars chạy rà soát dữ liệu chênh lệch cước ạ!';
+      } else if (agentKey === 'TieuVan') {
+        return 'Dạ báo cáo Chủ Tịch, em (Tiểu Vận) đã kiểm tra luồng vận chuyển 3PL tms-web và cập nhật biển số xe đối tác ạ!';
+      } else if (agentKey === 'TieuTham') {
+        return 'Dạ báo cáo Chủ Tịch, em (Tiểu Tham) đang soạn thảo văn bản tham mưu và kế hoạch chỉ đạo trình Chủ Tịch phê duyệt ạ!';
+      } else {
+        return 'Dạ báo cáo Chủ Tịch, em (Tiểu Đệ) đã nhận lệnh và đang điều phối đội ngũ AI thực hiện công việc. Kết quả chi tiết em đồng bộ tức thì sang Telegram ạ!';
+      }
+    }
+
+    function escapeHtml(text) {
+      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    window.onload = function() {
+      updateClock();
+    };
+  </script>
 </head>
-<body class="max-w-md mx-auto sm:max-w-lg">
+
+<body class="max-w-md mx-auto sm:max-w-lg" ontouchstart="">
 
   <!-- Toast Notification -->
   <div id="toast" class="toast"><i class="fa-solid fa-circle-check mr-1.5"></i> <span id="toastMsg">Thông báo</span></div>
 
   <!-- Interactive Task Dispatch Modal -->
-  <div id="agentModal" class="modal-overlay" onclick="closeModal(event)">
+  <div id="agentModal" class="modal-overlay" onclick="closeModal()">
     <div class="bg-slate-900 border border-amber-500/50 p-5 rounded-2xl max-w-sm w-full shadow-2xl relative" onclick="event.stopPropagation()">
       <button onclick="closeModal()" class="absolute top-3 right-3 text-slate-400 hover:text-white w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
         <i class="fa-solid fa-xmark"></i>
@@ -89,12 +323,12 @@
       <div id="dispatchBox" class="mb-3">
         <label class="text-[11px] font-bold text-amber-400 block mb-1"><i class="fa-solid fa-paper-plane mr-1"></i> GIAO VIỆC TRỰC TIẾP CHO NHÂN SỰ NÀY:</label>
         <textarea id="taskInput" rows="2" placeholder="Gõ lệnh giao việc tại đây..." 
-                  class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"></textarea>
+                  class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-base sm:text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"></textarea>
       </div>
 
       <div id="presetContainer" class="flex flex-wrap gap-1.5 mb-4"></div>
 
-      <button onclick="submitTask()" class="w-full bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-black py-2.5 rounded-xl hover:from-amber-300 hover:to-amber-400 transition shadow-lg text-xs">
+      <button onclick="submitTask()" class="w-full bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-black py-2.5 rounded-xl hover:from-amber-300 hover:to-amber-400 transition shadow-lg text-xs active:scale-95">
         <i class="fa-solid fa-bolt mr-1"></i> KÍCH HOẠT & GỬI LỆNH NGAY
       </button>
     </div>
@@ -126,16 +360,14 @@
     </div>
     <div class="text-right">
       <span class="text-xs font-mono text-slate-300 block mb-1" id="clock">07:53:25</span>
-      <button onclick="updateServer()" class="gold-btn px-3.5 py-1.5 text-xs shadow-md">
+      <button onclick="updateServer()" class="gold-btn px-3.5 py-1.5 text-xs shadow-md active:scale-95">
         <i class="fa-solid fa-rotate-right mr-1" id="spinIcon"></i> Update Server
       </button>
     </div>
   </div>
 
-  <!-- TAB 1: TRANG CHỦ (TỔNG QUAN BCCP CỤM VINH LÊN ĐẦU TIÊN) -->
+  <!-- TAB 1: TRANG CHỦ -->
   <div id="pageTrangChu" class="tab-page active-page">
-    
-    <!-- 1. BÁO CÁO TỔNG QUAN BCCP CỤM VINH (BƯU ĐIỆN THÀNH VINH) -->
     <div class="card-navy p-4 mb-4 border border-amber-500/50">
       <div class="flex justify-between items-center mb-3">
         <div>
@@ -144,14 +376,12 @@
             <i class="fa-solid fa-city mr-1.5"></i>1. TỔNG QUAN BCCP CỤM VINH (BĐ THÀNH VINH)
           </h3>
         </div>
-        <!-- Scope Toggle Buttons -->
         <div class="flex bg-slate-800 p-0.5 rounded-lg border border-slate-700 text-[10px]">
           <button class="bg-amber-500 text-slate-950 font-black px-2 py-0.5 rounded">Cụm Vinh</button>
           <button onclick="showToast('Xem Toàn tỉnh: 7.16 Tỷ')" class="text-slate-400 px-2 py-0.5 hover:text-white">Toàn Tỉnh</button>
         </div>
       </div>
 
-      <!-- KPI Top Grid for Cụm Vinh -->
       <div class="grid grid-cols-2 gap-2.5 text-xs mb-3">
         <div class="bg-slate-800/90 p-3 rounded-xl border border-slate-700">
           <span class="text-[10px] text-slate-400 block font-medium">Doanh Thu BCCP Cụm Vinh</span>
@@ -175,7 +405,6 @@
         </div>
       </div>
 
-      <!-- Khách Trọng Yếu & Khách Cảnh Báo Cụm Vinh -->
       <div class="grid grid-cols-2 gap-2 text-xs mb-3">
         <div class="bg-amber-950/40 p-2.5 rounded-xl border border-amber-800/50">
           <p class="text-[10px] text-amber-400 font-bold"><i class="fa-solid fa-star mr-1"></i> Khách Trọng Yếu Cụm Vinh: <span class="text-white text-xs">86 khách</span></p>
@@ -187,10 +416,9 @@
         </div>
       </div>
 
-      <!-- Cơ cấu Doanh thu Nhóm dịch vụ Cụm Vinh -->
       <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 text-[11px] space-y-2">
         <div class="flex justify-between items-center">
-          <span class="font-bold text-white"><i class="fa-solid fa-cart-shopping text-cyan-400 mr-1.5"></i>TMĐT Cụm Vinh:</span>
+          <span class="font-bold text-white"><i class="fa-solid fa-cart-shopping text-cyan-400 mr-1.5"></i>TMĐĐT Cụm Vinh:</span>
           <span class="font-black text-cyan-400">1.82 Tỷ (57.8% tỷ trọng Cụm)</span>
         </div>
         <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
@@ -207,7 +435,6 @@
       </div>
     </div>
 
-    <!-- 2. BÁO CÁO LOGISTICS & 3PL (THỨ HAI) -->
     <div class="card-navy p-4 mb-16 border border-blue-800">
       <div class="flex justify-between items-center mb-3">
         <h3 class="text-xs font-bold text-blue-400 uppercase tracking-wider flex items-center">
@@ -235,15 +462,14 @@
         </div>
       </div>
     </div>
-
   </div>
 
-  <!-- TAB 2: VĂN PHÒNG (2D VIRTUAL OFFICE) -->
+  <!-- TAB 2: VĂN PHÒNG -->
   <div id="pageVanPhong" class="tab-page">
     <div class="card-navy p-4 mb-5 shadow-2xl">
       <div class="flex justify-between items-center mb-3">
         <h2 class="text-xs font-bold text-amber-400 uppercase tracking-wider">VĂN PHÒNG LÀM VIỆC CỤM VINH (BẤM ĐỂ GIAO VIỆC)</h2>
-        <button onclick="openLiveChatModal('MUSE_ALL')" class="text-[11px] bg-slate-800 text-slate-300 px-3 py-1 rounded-full border border-slate-700 hover:border-amber-400">
+        <button onclick="openLiveChatModal('MUSE_ALL')" class="text-[11px] bg-amber-500/20 text-amber-300 px-3 py-1.5 rounded-full border border-amber-500/40 hover:bg-amber-500/30 flex items-center font-bold shadow-lg active:scale-95 transition-all">
           <i class="fa-solid fa-comment mr-1 text-amber-400"></i> Kênh chat
         </button>
       </div>
@@ -255,40 +481,44 @@
         </div>
         <div class="absolute bottom-2 right-2 text-xl">🌳</div>
 
-        <div class="chibi-char" style="top: 25px; left: 42%;" onclick="openAgentModal('Đại Ca Phạm Bá Hào', 'CHỦ TỊCH / GIÁM ĐỐC CỤM VINH', 'Đang chỉ đạo toàn bộ bộ máy 8 nhân viên AI tác chiến tại Cụm Bưu điện Vinh.', '👑', 'pham_ba_hao.jpg', 'chu_tich')">
+        <!-- Row 1: Chair Center -->
+        <div class="chibi-char" style="top: 15px; left: 50%; transform: translateX(-50%);" onclick="openAgentModal('Đại Ca Phạm Bá Hào', 'CHỦ TỊCH / GIÁM ĐỐC CỤM VINH', 'Đang chỉ đạo toàn bộ bộ máy 8 nhân viên AI tác chiến tại Cụm Bưu điện Vinh.', '👑', 'pham_ba_hao.jpg', 'chu_tich')">
           <div class="w-12 h-12 rounded-full border-2 border-amber-400 overflow-hidden shadow-xl bg-slate-900">
             <img src="pham_ba_hao.jpg" alt="Chủ tịch Phạm Bá Hào" class="w-full h-full object-cover">
           </div>
           <span class="badge-tag mt-1 shadow">GHẾ CHỦ TỊCH CỤM VINH</span>
         </div>
 
-        <div class="chibi-char" style="top: 85px; left: 18%;" onclick="openAgentModal('Tiểu Đệ', 'TỔNG CHỈ HUY / CEO', 'Đã mã hóa CSDL pgcrypto, kết nối Zalo OA, đẩy code tms-web & điều phối 8 AI.', '⚡', null, 'tieu_de')">
+        <!-- Row 2: CEO Left & Khu Hop Right -->
+        <div class="chibi-char" style="top: 85px; left: 4%;" onclick="openAgentModal('Tiểu Đệ', 'TỔNG CHỈ HUY / CEO', 'Đã mã hóa CSDL pgcrypto, kết nối Zalo OA, đẩy code tms-web & điều phối 8 AI.', '⚡', null, 'tieu_de')">
           <span class="text-2xl drop-shadow-md">🐱💻</span>
           <span class="badge-tag mt-1">BÀN CEO (Tiểu Đệ)</span>
         </div>
 
-        <div class="chibi-char" style="top: 110px; right: 12%;" onclick="openAgentModal('Tiểu Tham', 'THAM MƯU & KẾ HOẠCH', 'Đã xuất 5 tệp Word Đề tài Sáng kiến 2026 & Thông báo KPI Tháng 12 (.docx chuẩn NĐ 30).', '✍️', null, 'tieu_tham')">
+        <div class="chibi-char" style="top: 85px; right: 4%;" onclick="openAgentModal('Tiểu Tham', 'THAM MƯU & KẾ HOẠCH', 'Đã xuất 5 tệp Word Đề tài Sáng kiến 2026 & Thông báo KPI Tháng 12 (.docx chuẩn NĐ 30).', '✍️', null, 'tieu_tham')">
           <span class="text-2xl drop-shadow-md">🐯📋</span>
           <span class="badge-tag mt-1">KHU HỌP (Tiểu Tham)</span>
         </div>
 
-        <div class="chibi-char" style="bottom: 20px; left: 38%;" onclick="openAgentModal('Tiểu Vận', '3PL VẬN TẢI & XE TẢI', 'Đã nâng cấp tms-web với Kanban 3PL, Bảng cước & theo dõi 18 biển số xe đối tác.', '🚛', null, 'tieu_van')">
-          <span class="text-2xl drop-shadow-md">🦊🚛</span>
+        <!-- Row 3: Kenh Trung Center -->
+        <div class="chibi-char" style="top: 175px; left: 50%; transform: translateX(-50%);" onclick="openAgentModal('Tiểu Vận', '3PL VẬN TẢI & XE TẢI', 'Đã nâng cấp tms-web với Kanban 3PL, Bảng cước & theo dõi 18 biển số xe đối tác.', '🚚', null, 'tieu_van')">
+          <span class="text-2xl drop-shadow-md">🦊🚚</span>
           <span class="badge-tag mt-1">KÊNH TRUNG (Tiểu Vận)</span>
         </div>
 
-        <div class="chibi-char" style="bottom: 15px; left: 8%;" onclick="openAgentModal('Tiểu Soát', 'ROBOT PYTHON ĐỐI SOÁT', 'Robot Python đã hoàn tất đối soát số liệu thu BHXH/BHYT đêm qua (22:46).', '⚙️', null, 'tieu_soat')">
+        <!-- Row 4: Kenh Nhat Bottom Left & Kenh Anh Bottom Right -->
+        <div class="chibi-char" style="bottom: 12px; left: 4%;" onclick="openAgentModal('Tiểu Soát', 'ROBOT PYTHON ĐỐI SOÁT', 'Robot Python đã hoàn tất đối soát số liệu thu BHXH/BHYT đêm qua (22:46).', '⚙️', null, 'tieu_soat')">
           <span class="text-2xl drop-shadow-md">🐶⚙️</span>
           <span class="badge-tag mt-1">KÊNH NHẬT (Tiểu Soát)</span>
         </div>
 
-        <div class="chibi-char" style="bottom: 15px; right: 8%;" onclick="openAgentModal('Tiểu Bưu', 'BƯU GỬI & THU GOM', 'Đang quản lý 170 tệp bưu gửi, danh mục bưu cục KHL Vinh & bưu tá thu gom hiện trường.', '📦', null, 'tieu_buu')">
+        <div class="chibi-char" style="bottom: 12px; right: 4%;" onclick="openAgentModal('Tiểu Bưu', 'BƯU GỬI & THU GOM', 'Đang quản lý 170 tệp bưu gửi, danh mục bưu cục KHL Vinh & bưu tá thu gom hiện trường.', '📦', null, 'tieu_buu')">
           <span class="text-2xl drop-shadow-md">🐻📦</span>
           <span class="badge-tag mt-1">KÊNH ANH (Tiểu Bưu)</span>
         </div>
       </div>
       
-      <p class="text-[11px] text-slate-400 text-center mt-3 font-medium">Bấm vào nhân vật AI để Giao việc & Xem sản phẩm kết quả.</p>
+      <p class="text-[11px] text-slate-400 text-center mt-3 font-medium">Bấm trực tiếp vào nhân vật AI để Giao việc & Mở Chat.</p>
     </div>
 
     <!-- Navigation Grid -->
@@ -297,7 +527,7 @@
       <div class="grid grid-cols-2 gap-2.5 text-xs">
         <button onclick="selectDesk(this, 'Tiểu Đệ', 'TỔNG CHỈ HUY', 'Đang giám sát 8 nhân viên AI tác chiến', '⚡', null, 'tieu_de')" class="nav-btn">Bàn CEO (Tiểu Đệ)</button>
         <button onclick="selectDesk(this, 'Tiểu Soát', 'ROBOT ĐỐI SOÁT', 'Chuyên chạy đối soát dữ liệu BHXH/BHYT', '⚙️', null, 'tieu_soat')" class="nav-btn">Kênh Nhật (Tiểu Soát)</button>
-        <button onclick="selectDesk(this, 'Tiểu Vận', '3PL VẬN TẢI', 'Theo dõi 18 biển số xe đối tác trên tms-web', '🚛', null, 'tieu_van')" class="nav-btn">Kênh Trung (Tiểu Vận)</button>
+        <button onclick="selectDesk(this, 'Tiểu Vận', '3PL VẬN TẢI', 'Theo dõi 18 biển số xe đối tác trên tms-web', '🚚', null, 'tieu_van')" class="nav-btn">Kênh Trung (Tiểu Vận)</button>
         <button onclick="selectDesk(this, 'Tiểu Bưu', 'BƯU GỬI KHL', 'Quản lý thu gom KHL Vinh & bưu cục', '📦', null, 'tieu_buu')" class="nav-btn">Kênh Anh (Tiểu Bưu)</button>
         <button onclick="selectDesk(this, 'Đại Ca Phạm Bá Hào', 'CHỦ TỊCH CỤM VINH', 'Giám đốc Cụm Vinh • Chỉ đạo chung', '👑', 'pham_ba_hao.jpg', 'chu_tich')" class="nav-btn active">Ghế Chủ Tịch (Cụm Vinh)</button>
         <button onclick="selectDesk(this, 'Tiểu Tham', 'THAM MƯU KẾ HOẠCH', 'Soạn thảo văn bản chỉ đạo & thông báo', '✍️', null, 'tieu_tham')" class="nav-btn">Khu Họp (Tiểu Tham)</button>
@@ -442,8 +672,59 @@
     </div>
   </div>
 
+  <!-- LIVE CHAT MODAL / DRAWER FOR COMMAND CENTER -->
+  <div id="liveChatModal" class="modal-overlay" onclick="closeLiveChatModal()">
+    <div class="bg-slate-900 border border-amber-500/50 w-full max-w-lg h-[85vh] sm:h-[600px] rounded-t-2xl sm:rounded-2xl flex flex-col shadow-2xl overflow-hidden relative" onclick="event.stopPropagation()">
+      
+      <!-- Modal Header -->
+      <div class="bg-slate-800/90 border-b border-slate-700 p-3.5 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div id="chatAgentAvatar" class="w-9 h-9 rounded-full bg-amber-500/20 border border-amber-400/50 flex items-center justify-center text-lg">
+            🤖
+          </div>
+          <div>
+            <h3 id="chatAgentTitle" class="text-xs font-bold text-amber-300 uppercase tracking-wide">KHUNG CHAT TÁC CHIẾN AI</h3>
+            <p id="chatAgentSubtitle" class="text-[10px] text-slate-400">Trực 24/7 • Trực tiếp tại Văn phòng Điều hành</p>
+          </div>
+        </div>
+        <button onclick="closeLiveChatModal()" class="w-8 h-8 rounded-full bg-slate-700/50 text-slate-300 hover:bg-slate-700 flex items-center justify-center text-sm font-bold">
+          ✕
+        </button>
+      </div>
+
+      <!-- Messages Container -->
+      <div id="chatMessagesList" class="flex-1 p-4 overflow-y-auto space-y-3.5 text-xs bg-slate-950/40">
+        <div class="flex items-start space-x-2.5">
+          <div class="w-7 h-7 rounded-full bg-amber-500/20 border border-amber-400/30 flex items-center justify-center text-xs flex-shrink-0">🐱</div>
+          <div class="bg-slate-800 border border-slate-700 p-3 rounded-2xl rounded-tl-none text-slate-200 max-w-[85%] shadow-sm">
+            <p class="font-semibold text-amber-300 mb-1">Tiểu Đệ (General Commander)</p>
+            <p>Báo cáo Chủ Tịch, em và 5 nhân viên AI tác chiến (Tiểu Tham, Tiểu Bưu, Tiểu Vận, Tiểu Soát, Tiểu Chăm) đã sẵn sàng nhận lệnh ạ!</p>
+            <span class="text-[9px] text-slate-400 block mt-1 text-right">MUSE AI • Live</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Typing Indicator -->
+      <div id="chatTypingIndicator" class="px-4 py-1.5 text-[10px] text-amber-400 italic bg-slate-900/80 border-t border-slate-800/50 items-center space-x-1" style="display: none;">
+        <span class="animate-bounce">●</span><span class="animate-bounce delay-100">●</span><span class="animate-bounce delay-200">●</span>
+        <span id="typingAgentName" class="ml-1">AI đang xử lý...</span>
+      </div>
+
+      <!-- Input Area -->
+      <div class="p-3 bg-slate-800/90 border-t border-slate-700 flex items-center space-x-2">
+        <input id="chatInputText" type="text" placeholder="Gõ yêu cầu giao việc cho AI..." 
+               class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-base sm:text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
+               onkeydown="if(event.key === 'Enter') sendLiveChatMessage()">
+        <button onclick="sendLiveChatMessage()" class="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold px-4 py-2.5 rounded-xl hover:from-amber-400 hover:to-amber-500 text-xs shadow-md active:scale-95 transition-all">
+          Gửi <i class="fa-solid fa-paper-plane ml-1"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Bottom Navigation Bar (App Bar) -->
-  <div class="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 py-2 px-1 max-w-md mx-auto sm:max-w-lg flex justify-around text-[10px] text-slate-400 z-50">
+  <div class="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 py-2.5 px-1 max-w-md mx-auto sm:max-w-lg flex justify-around text-[10px] text-slate-400 z-50">
     <div id="tabTrangChu" class="tab-btn active-tab flex flex-col items-center cursor-pointer" onclick="switchAppTab('TrangChu')">
       <i class="fa-solid fa-house text-sm"></i>
       <span class="mt-0.5">Trang chủ</span>
@@ -474,254 +755,6 @@
       <span class="mt-0.5">Cài đặt</span>
     </div>
   </div>
-
-  <!-- INTERACTIVE JAVASCRIPT LOGIC -->
-  <script>
-    let currentActiveAgentId = 'tieu_de';
-    let currentActiveAgentName = 'Tiểu Đệ';
-
-    const PRESETS = {
-      'tieu_tham': ['Soạn thông báo KPI Tháng 12', 'Lập kế hoạch cao điểm Tết', 'Soạn công văn chỉ đạo BĐX'],
-      'tieu_van': ['Kiểm tra 18 biển số xe 3PL', 'Rà soát trễ nộp POD', 'Xử lý báo giá chuyến BM-06'],
-      'tieu_soat': ['Chạy đối soát BHXH Vinh', 'Kiểm tra lệch cước', 'Xuất báo cáo D03/D05'],
-      'tieu_buu': ['Kiểm tra bưu cục KHL Vinh', 'Đôn đốc bưu tá thu gom', 'Bóc tách danh mục 21 huyện xã'],
-      'tieu_cham': ['Nhắn Zalo OA đôn đốc 8h', 'Trực CSKH tự động 24/7', 'Bắn tin ZNS nhắc việc'],
-      'tieu_de': ['Tổng hợp báo cáo ngày Cụm Vinh', 'Kiểm tra tiến độ 8 nhân sự AI', 'Rà soát hệ thống 3PL']
-    };
-
-    const RESULTS = {
-      'tieu_tham': 'Đã xuất 5 tệp Word Sáng kiến 2026 (.docx chuẩn NĐ 30) & Thông báo KPI Tháng 12.',
-      'tieu_van': 'Đã cập nhật tms-web: Giao diện 3PL Kanban, quản lý theo Biển số xe & Cảnh báo margin < 6%.',
-      'tieu_soat': 'Robot Python đã chạy thành công 100% đối soát số liệu BHXH đêm qua lúc 22:46:54.',
-      'tieu_buu': 'Đang quản lý 170 tệp bưu gửi, danh mục bưu cục KHL Vinh & bưu tá thu gom hiện trường.',
-      'tieu_cham': 'Đã kết nối Zalo OA, thiết lập ZNS nhac_viec & daemon đôn đốc nhân viên Lựa chọn 2.',
-      'tieu_de': 'Đã hoàn tất mã hóa CSDL pgcrypto, đồng bộ GitHub, kết nối Zalo & dựng Mobile App Command Center.'
-    };
-
-    function updateClock() {
-      const now = new Date();
-      document.getElementById('clock').textContent = now.toTimeString().split(' ')[0];
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
-
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      document.getElementById('toastMsg').textContent = msg;
-      toast.style.display = 'block';
-      setTimeout(() => { toast.style.display = 'none'; }, 2500);
-    }
-
-    function updateServer() {
-      const icon = document.getElementById('spinIcon');
-      icon.classList.add('fa-spin');
-      showToast('Đang đồng bộ dữ liệu Cụm Vinh...');
-      setTimeout(() => {
-        icon.classList.remove('fa-spin');
-        showToast('Dữ liệu Cụm Vinh đã được cập nhật!');
-      }, 1500);
-    }
-
-    function openAgentModal(name, role, desc, icon, imgUrl, agentId) {
-      currentActiveAgentId = agentId || 'tieu_de';
-      currentActiveAgentName = name;
-
-      document.getElementById('modalName').textContent = name;
-      document.getElementById('modalRole').textContent = role;
-      document.getElementById('modalDesc').textContent = desc;
-      document.getElementById('taskInput').value = '';
-
-      const resText = RESULTS[currentActiveAgentId] || 'Đã hoàn tất nhiệm vụ gần nhất.';
-      document.getElementById('modalResultText').textContent = resText;
-      document.getElementById('modalResultAction').innerHTML = `<button onclick="showToast('Đang mở kết quả của ${name}...')" class="bg-amber-500 text-slate-950 font-bold px-3 py-1 rounded-lg text-[10px]"><i class="fa-solid fa-eye mr-1"></i> Xem Chi Tiết Kết Quả</button>`;
-
-      const iconBox = document.getElementById('modalIcon');
-      if (imgUrl) {
-        iconBox.innerHTML = `<img src="${imgUrl}" class="w-full h-full object-cover rounded-xl">`;
-      } else {
-        iconBox.innerHTML = icon || '🤖';
-      }
-
-      const presetBox = document.getElementById('presetContainer');
-      const list = PRESETS[currentActiveAgentId] || ['Kiểm tra tiến độ', 'Gửi báo cáo'];
-      presetBox.innerHTML = list.map(p => 
-        `<button onclick="applyPreset('${p}')" class="bg-slate-800 text-amber-300 border border-amber-500/30 px-2.5 py-1 rounded-lg text-[10px] hover:bg-amber-500 hover:text-slate-900 transition font-medium">${p}</button>`
-      ).join('');
-
-      document.getElementById('agentModal').style.display = 'flex';
-    }
-
-    function applyPreset(txt) {
-      document.getElementById('taskInput').value = txt;
-    }
-
-    function closeModal(e) {
-      document.getElementById('agentModal').style.display = 'none';
-    }
-
-    async function submitTask() {
-      const input = document.getElementById('taskInput').value.trim();
-      if (!input) {
-        showToast('Vui lòng gõ nội dung công việc cần giao!');
-        return;
-      }
-
-      showToast('Đang gửi lệnh giao việc cho ' + currentActiveAgentName + '...');
-
-      closeModal();
-      setTimeout(() => {
-        showToast('Đã kích hoạt! ' + currentActiveAgentName + ' đã nhận việc và đang xử lý ngầm.');
-      }, 1200);
-    }
-
-    function selectDesk(btn, name, role, desc, icon, imgUrl, agentId) {
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      openAgentModal(name, role, desc, icon, imgUrl, agentId);
-    }
-
-    function switchAppTab(tabKey) {
-      document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active-page'));
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab'));
-
-      const targetPage = document.getElementById('page' + tabKey);
-      const targetBtn = document.getElementById('tab' + tabKey);
-
-      if (targetPage) targetPage.classList.add('active-page');
-      if (targetBtn) targetBtn.classList.add('active-tab');
-
-      showToast('Đã mở Tab: ' + tabKey);
-    }
-  </script>
-
-<!-- LIVE CHAT MODAL / DRAWER FOR COMMAND CENTER -->
-<div id="liveChatModal" class="fixed inset-0 z-[100] hidden bg-slate-950/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
-  <div class="bg-slate-900 border border-slate-700 w-full max-w-lg h-[85vh] sm:h-[600px] rounded-t-2xl sm:rounded-2xl flex flex-col shadow-2xl overflow-hidden">
-    
-    <!-- Modal Header -->
-    <div class="bg-slate-800/90 border-b border-slate-700 p-3.5 flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <div id="chatAgentAvatar" class="w-9 h-9 rounded-full bg-amber-500/20 border border-amber-400/50 flex items-center justify-center text-lg">
-          🤖
-        </div>
-        <div>
-          <h3 id="chatAgentTitle" class="text-xs font-bold text-amber-300 uppercase tracking-wide">KHUNG CHAT TÁC CHIẾN AI</h3>
-          <p id="chatAgentSubtitle" class="text-[10px] text-slate-400">Trực 24/7 • Trực tiếp tại Văn phòng Điều hành</p>
-        </div>
-      </div>
-      <button onclick="closeLiveChatModal()" class="w-8 h-8 rounded-full bg-slate-700/50 text-slate-300 hover:bg-slate-700 flex items-center justify-center text-sm font-bold">
-        ✕
-      </button>
-    </div>
-
-    <!-- Messages Container -->
-    <div id="chatMessagesList" class="flex-1 p-4 overflow-y-auto space-y-3.5 text-xs bg-slate-950/40">
-      <div class="flex items-start space-x-2.5">
-        <div class="w-7 h-7 rounded-full bg-amber-500/20 border border-amber-400/30 flex items-center justify-center text-xs flex-shrink-0">🐱</div>
-        <div class="bg-slate-800 border border-slate-700 p-3 rounded-2xl rounded-tl-none text-slate-200 max-w-[85%] shadow-sm">
-          <p class="font-semibold text-amber-300 mb-1">Tiểu Đệ (General Commander)</p>
-          <p>Báo cáo Chủ Tịch, em và 5 nhân viên AI tác chiến (Tiểu Tham, Tiểu Bưu, Tiểu Vận, Tiểu Soát, Tiểu Chăm) đã sẵn sàng nhận lệnh ạ!</p>
-          <span class="text-[9px] text-slate-400 block mt-1 text-right">MUSE AI • Live</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Typing Indicator -->
-    <div id="chatTypingIndicator" class="hidden px-4 py-1.5 text-[10px] text-amber-400 italic bg-slate-900/80 border-t border-slate-800/50 flex items-center space-x-1">
-      <span class="animate-bounce">●</span><span class="animate-bounce delay-100">●</span><span class="animate-bounce delay-200">●</span>
-      <span id="typingAgentName" class="ml-1">AI đang xử lý công việc...</span>
-    </div>
-
-    <!-- Input Area -->
-    <div class="p-3 bg-slate-800/90 border-t border-slate-700 flex items-center space-x-2">
-      <input id="chatInputText" type="text" placeholder="Gõ yêu cầu giao việc cho AI..." 
-             class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-base sm:text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
-             onkeydown="if(event.key === 'Enter') sendLiveChatMessage()">
-      <button onclick="sendLiveChatMessage()" class="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold px-4 py-2.5 rounded-xl hover:from-amber-400 hover:to-amber-500 text-xs shadow-md active:scale-95 transition-all">
-        Gửi <i class="fa-solid fa-paper-plane ml-1"></i>
-      </button>
-    </div>
-
-  </div>
-</div>
-
-<script>
-let currentChatAgent = 'TieuDe';
-
-const AGENT_CONFIGS = {
-  'TieuDe': { name: 'Tiểu Đệ (General Commander)', avatar: '🐱', role: 'Tổng chỉ huy điều phối 5 nhân viên AI' },
-  'TieuTham': { name: 'Tiểu Tham (Planning & Directives)', avatar: '🐯', role: 'Tham mưu, lập kế hoạch công tác & soạn thảo văn bản' },
-  'TieuBuu': { name: 'Tiểu Bưu (Parcel & Collection)', avatar: '🐻', role: 'Chuyên trách thugom-buugui, điểm gom & bưu gửi' },
-  'TieuVan': { name: 'Tiểu Vận (3PL Transport & Fleet)', avatar: '🦊', role: 'Chuyên trách tms-web, luồng 3PL & biển số xe' },
-  'TieuSoat': { name: 'Tiểu Soát (Data & Audit)', avatar: '🐶', role: 'Chuyên trách doisoat-bhxh, kiểm soát cước BHXH/BHYT' },
-  'MUSE_ALL': { name: 'Trung Tâm Điều Hành Cụm Vinh', avatar: '🏛️', role: 'Kênh giao việc chung cho Ban Chỉ Huy' }
-};
-
-function openLiveChatModal(agentKey = 'TieuDe') {
-  currentChatAgent = agentKey;
-  const config = AGENT_CONFIGS[agentKey] || AGENT_CONFIGS['TieuDe'];
-  
-  document.getElementById('chatAgentAvatar').innerText = config.avatar;
-  document.getElementById('chatAgentTitle').innerText = config.name;
-  document.getElementById('chatAgentSubtitle').innerText = config.role;
-  
-  const modal = document.getElementById('liveChatModal');
-  modal.classList.remove('hidden');
-  setTimeout(() => document.getElementById('chatInputText').focus(), 100);
-}
-
-function closeLiveChatModal() {
-  document.getElementById('liveChatModal').classList.add('hidden');
-}
-
-function sendLiveChatMessage() {
-  const input = document.getElementById('chatInputText');
-  const text = input.value.trim();
-  if (!text) return;
-
-  const list = document.getElementById('chatMessagesList');
-  const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-  const userMsgHtml = '<div class="flex items-start justify-end space-x-2"><div class="bg-amber-500/20 border border-amber-400/40 p-3 rounded-2xl rounded-tr-none text-slate-100 max-w-[85%] shadow-sm"><p class="font-semibold text-amber-300 text-[10px] mb-0.5">Chủ Tịch (Pham Ba Hao)</p><p>' + escapeHtml(text) + '</p><span class="text-[9px] text-slate-400 block mt-1 text-right">' + now + '</span></div></div>';
-  
-  list.insertAdjacentHTML('beforeend', userMsgHtml);
-  input.value = '';
-  list.scrollTop = list.scrollHeight;
-
-  const config = AGENT_CONFIGS[currentChatAgent] || AGENT_CONFIGS['TieuDe'];
-  const indicator = document.getElementById('chatTypingIndicator');
-  document.getElementById('typingAgentName').innerText = config.name + ' đang xử lý...';
-  indicator.classList.remove('hidden');
-
-  setTimeout(() => {
-    indicator.classList.add('hidden');
-    let responseText = generateAgentResponse(currentChatAgent, text);
-
-    const aiMsgHtml = '<div class="flex items-start space-x-2.5"><div class="w-7 h-7 rounded-full bg-amber-500/20 border border-amber-400/30 flex items-center justify-center text-xs flex-shrink-0">' + config.avatar + '</div><div class="bg-slate-800 border border-slate-700 p-3 rounded-2xl rounded-tl-none text-slate-200 max-w-[85%] shadow-sm"><p class="font-semibold text-amber-300 mb-1">' + config.name + '</p><p>' + responseText + '</p><span class="text-[9px] text-slate-400 block mt-1 text-right">' + now + ' • MUSE AI</span></div></div>';
-    
-    list.insertAdjacentHTML('beforeend', aiMsgHtml);
-    list.scrollTop = list.scrollHeight;
-  }, 1000);
-}
-
-function generateAgentResponse(agentKey, prompt) {
-  if (agentKey === 'TieuBuu') {
-    return 'Dạ báo cáo Chủ Tịch, em (Tiểu Bưu) đã ghi nhận lệnh bưu gửi/điểm gom. Hệ thống thugom-buugui đang kiểm tra sản lượng và báo cáo trực tiếp về Telegram cho Chủ Tịch ạ!';
-  } else if (agentKey === 'TieuSoat') {
-    return 'Dạ báo cáo Chủ Tịch, em (Tiểu Soát) đã tiếp nhận công việc đối soát BHXH/BHYT Cụm Vinh và đang cho Polars chạy rà soát dữ liệu chênh lệch cước ạ!';
-  } else if (agentKey === 'TieuVan') {
-    return 'Dạ báo cáo Chủ Tịch, em (Tiểu Vận) đã kiểm tra luồng vận chuyển 3PL tms-web và cập nhật biển số xe đối tác ạ!';
-  } else if (agentKey === 'TieuTham') {
-    return 'Dạ báo cáo Chủ Tịch, em (Tiểu Tham) đang soạn thảo văn bản tham mưu và kế hoạch chỉ đạo trình Chủ Tịch phê duyệt ạ!';
-  } else {
-    return 'Dạ báo cáo Chủ Tịch, em (Tiểu Đệ) đã nhận lệnh và đang điều phối đội ngũ AI thực hiện công việc. Kết quả chi tiết em đồng bộ tức thì sang Telegram ạ!';
-  }
-}
-
-function escapeHtml(text) {
-  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-}
-</script>
 
 </body>
 </html>
