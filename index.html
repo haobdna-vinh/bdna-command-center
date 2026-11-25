@@ -104,6 +104,7 @@
       'TieuBuu': { name: 'Tiểu Bưu (Parcel & Collection)', avatar: '🐻', role: 'Chuyên trách thugom-buugui, điểm gom & bưu gửi' },
       'TieuVan': { name: 'Tiểu Vận (3PL Transport & Fleet)', avatar: '🦊', role: 'Chuyên trách tms-web, luồng 3PL & biển số xe' },
       'TieuSoat': { name: 'Tiểu Soát (Data & Audit)', avatar: '🐶', role: 'Chuyên trách doisoat-bhxh, kiểm soát cước BHXH/BHYT' },
+      'TieuCham': { name: 'Tiểu Chăm (CSKH & Zalo)', avatar: '💬', role: 'Chăm sóc khách hàng, Zalo OA/ZNS & nhắc việc' },
       'MUSE_ALL': { name: 'Trung Tâm Điều Hành Cụm Vinh', avatar: '🏛️', role: 'Kênh giao việc chung cho Ban Chỉ Huy' }
     };
 
@@ -179,13 +180,10 @@
         showToast('Vui lòng gõ nội dung công việc cần giao!');
         return;
       }
-
-      showToast('Đang gửi lệnh giao việc cho ' + currentActiveAgentName + '...');
+      const key = AGENT_ID_TO_KEY[currentActiveAgentId] || 'TieuDe';
       closeModal();
-      
-      setTimeout(() => {
-        showToast('Đã kích hoạt! ' + currentActiveAgentName + ' đã nhận việc và đang xử lý ngầm.');
-      }, 1000);
+      openLiveChatModal(key);
+      sendToAgent(key, input, 'task');
     }
 
     function selectDesk(btn, name, role, desc, icon, imgUrl, agentId) {
@@ -230,7 +228,8 @@
         'tieu_tham': 'TieuTham',
         'tieu_buu': 'TieuBuu',
         'tieu_van': 'TieuVan',
-        'tieu_soat': 'TieuSoat'
+        'tieu_soat': 'TieuSoat',
+        'tieu_cham': 'TieuCham'
       };
       openLiveChatModal(keyMap[agentId] || 'TieuDe');
     }
@@ -240,48 +239,121 @@
       if (modal) modal.style.display = 'none';
     }
 
+    // ===== KẾT NỐI AGENT THẬT (OpenClaw trên VPS bdvinh) =====
+    // MUSE_API do Tiểu Đệ cung cấp, ví dụ 'https://<tên-miền-vps>/muse-api'. Để trống = chưa nối, chat sẽ báo rõ, không trả lời giả.
+    const MUSE_API = '';
+    const MUSE_TIMEOUT_MS = 90000;
+    const AGENT_ID_TO_KEY = {
+      'tieu_de': 'TieuDe', 'tieu_tham': 'TieuTham', 'tieu_buu': 'TieuBuu',
+      'tieu_van': 'TieuVan', 'tieu_soat': 'TieuSoat', 'tieu_cham': 'TieuCham'
+    };
+    let chatBusy = false;
+
+    function lsGet(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }
+    function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+    function lsDel(k) { try { localStorage.removeItem(k); } catch (e) {} }
+
+    // Repo công khai nên KHÔNG để mã bí mật trong code: Chủ Tịch nhập mã một lần, lưu trên máy này.
+    function museToken() {
+      let t = lsGet('muse_token');
+      if (!t) {
+        t = (window.prompt('Nhập mã truy cập MUSE (chỉ nhập một lần trên máy này):') || '').trim();
+        if (t) lsSet('muse_token', t);
+      }
+      return t;
+    }
+
+    function museSession(agentKey) {
+      const k = 'muse_session_' + agentKey;
+      let id = lsGet(k);
+      if (!id) {
+        id = 'muse-' + agentKey + '-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+        lsSet(k, id);
+      }
+      return id;
+    }
+
+    async function callMuse(kind, agentKey, message) {
+      if (!MUSE_API) throw new Error('NOT_CONFIGURED');
+      const token = museToken();
+      if (!token) throw new Error('NO_TOKEN');
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), MUSE_TIMEOUT_MS);
+      try {
+        const res = await fetch(MUSE_API.replace(/\/+$/, '') + '/muse/chat', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', 'authorization': 'Bearer ' + token },
+          body: JSON.stringify({ kind: kind, agent: agentKey, message: message, session_id: museSession(agentKey) }),
+          signal: ctrl.signal
+        });
+        if (res.status === 401 || res.status === 403) { lsDel('muse_token'); throw new Error('AUTH'); }
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const j = await res.json();
+        if (!j || typeof j.reply !== 'string' || !j.reply.trim()) throw new Error('EMPTY');
+        return j.reply;
+      } catch (e) {
+        if (e && e.name === 'AbortError') throw new Error('TIMEOUT');
+        throw e;
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    function museErrorText(e) {
+      const m = (e && e.message) || '';
+      if (m === 'NOT_CONFIGURED') return 'Chưa nối được với agent: MUSE chưa được cấu hình địa chỉ máy chủ (MUSE_API). Tin chưa được gửi đi.';
+      if (m === 'NO_TOKEN') return 'Chưa có mã truy cập nên tin chưa được gửi đi. Gửi lại và nhập mã khi được hỏi.';
+      if (m === 'AUTH') return 'Mã truy cập không đúng hoặc đã hết hạn. Tin chưa được gửi đi. Gửi lại để nhập mã mới.';
+      if (m === 'TIMEOUT') return 'Agent không phản hồi sau 90 giây. Tin có thể chưa được xử lý, vui lòng thử lại.';
+      if (m.indexOf('HTTP ') === 0) return 'Máy chủ agent báo lỗi (' + m + '). Vui lòng thử lại sau.';
+      if (m === 'EMPTY') return 'Agent trả về nội dung rỗng. Vui lòng thử lại.';
+      return 'Không kết nối được với agent (mất mạng hoặc máy chủ đang tắt). Tin chưa được gửi đi.';
+    }
+
+    function chatNow() { return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+
+    function pushUserBubble(text) {
+      const list = document.getElementById('chatMessagesList');
+      list.insertAdjacentHTML('beforeend', '<div class="flex items-start justify-end space-x-2"><div class="bg-amber-500/20 border border-amber-400/40 p-3 rounded-2xl rounded-tr-none text-slate-100 max-w-[85%] shadow-sm"><p class="font-semibold text-amber-300 text-[10px] mb-0.5">Chủ Tịch (Pham Ba Hao)</p><p>' + escapeHtml(text).replace(/\n/g, '<br>') + '</p><span class="text-[9px] text-slate-400 block mt-1 text-right">' + chatNow() + '</span></div></div>');
+      list.scrollTop = list.scrollHeight;
+    }
+
+    function pushAgentBubble(config, text, isError) {
+      const list = document.getElementById('chatMessagesList');
+      const box = isError ? 'bg-red-950/60 border border-red-500/50 text-red-200' : 'bg-slate-800 border border-slate-700 text-slate-200';
+      const tag = isError ? ' • Lỗi kết nối' : ' • MUSE AI';
+      list.insertAdjacentHTML('beforeend', '<div class="flex items-start space-x-2.5"><div class="w-7 h-7 rounded-full bg-amber-500/20 border border-amber-400/30 flex items-center justify-center text-xs flex-shrink-0">' + config.avatar + '</div><div class="' + box + ' p-3 rounded-2xl rounded-tl-none max-w-[85%] shadow-sm"><p class="font-semibold text-amber-300 mb-1">' + config.name + '</p><p>' + escapeHtml(text).replace(/\n/g, '<br>') + '</p><span class="text-[9px] text-slate-400 block mt-1 text-right">' + chatNow() + tag + '</span></div></div>');
+      list.scrollTop = list.scrollHeight;
+    }
+
+    async function sendToAgent(agentKey, text, kind) {
+      if (chatBusy) { showToast('Agent đang xử lý tin trước, vui lòng đợi...'); return false; }
+      chatBusy = true;
+      const config = AGENT_CONFIGS[agentKey] || AGENT_CONFIGS['TieuDe'];
+      const indicator = document.getElementById('chatTypingIndicator');
+      pushUserBubble(text);
+      document.getElementById('typingAgentName').innerText = config.name + ' đang xử lý...';
+      indicator.style.display = 'flex';
+      try {
+        const reply = await callMuse(kind || 'chat', agentKey, text);
+        pushAgentBubble(config, reply, false);
+        return true;
+      } catch (e) {
+        pushAgentBubble(config, museErrorText(e), true);
+        return false;
+      } finally {
+        indicator.style.display = 'none';
+        chatBusy = false;
+      }
+    }
+
     function sendLiveChatMessage() {
       const input = document.getElementById('chatInputText');
       const text = input.value.trim();
       if (!text) return;
-
-      const list = document.getElementById('chatMessagesList');
-      const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-      const userMsgHtml = '<div class="flex items-start justify-end space-x-2"><div class="bg-amber-500/20 border border-amber-400/40 p-3 rounded-2xl rounded-tr-none text-slate-100 max-w-[85%] shadow-sm"><p class="font-semibold text-amber-300 text-[10px] mb-0.5">Chủ Tịch (Pham Ba Hao)</p><p>' + escapeHtml(text) + '</p><span class="text-[9px] text-slate-400 block mt-1 text-right">' + now + '</span></div></div>';
-      
-      list.insertAdjacentHTML('beforeend', userMsgHtml);
+      if (chatBusy) { showToast('Agent đang xử lý tin trước, vui lòng đợi...'); return; }
       input.value = '';
-      list.scrollTop = list.scrollHeight;
-
-      const config = AGENT_CONFIGS[currentChatAgent] || AGENT_CONFIGS['TieuDe'];
-      const indicator = document.getElementById('chatTypingIndicator');
-      document.getElementById('typingAgentName').innerText = config.name + ' đang xử lý...';
-      indicator.style.display = 'flex';
-
-      setTimeout(() => {
-        indicator.style.display = 'none';
-        let responseText = generateAgentResponse(currentChatAgent, text);
-
-        const aiMsgHtml = '<div class="flex items-start space-x-2.5"><div class="w-7 h-7 rounded-full bg-amber-500/20 border border-amber-400/30 flex items-center justify-center text-xs flex-shrink-0">' + config.avatar + '</div><div class="bg-slate-800 border border-slate-700 p-3 rounded-2xl rounded-tl-none text-slate-200 max-w-[85%] shadow-sm"><p class="font-semibold text-amber-300 mb-1">' + config.name + '</p><p>' + responseText + '</p><span class="text-[9px] text-slate-400 block mt-1 text-right">' + now + ' • MUSE AI</span></div></div>';
-        
-        list.insertAdjacentHTML('beforeend', aiMsgHtml);
-        list.scrollTop = list.scrollHeight;
-      }, 1000);
-    }
-
-    function generateAgentResponse(agentKey, prompt) {
-      if (agentKey === 'TieuBuu') {
-        return 'Dạ báo cáo Chủ Tịch, em (Tiểu Bưu) đã ghi nhận lệnh bưu gửi/điểm gom. Hệ thống thugom-buugui đang kiểm tra sản lượng và báo cáo trực tiếp về Telegram cho Chủ Tịch ạ!';
-      } else if (agentKey === 'TieuSoat') {
-        return 'Dạ báo cáo Chủ Tịch, em (Tiểu Soát) đã tiếp nhận công việc đối soát BHXH/BHYT Cụm Vinh và đang cho Polars chạy rà soát dữ liệu chênh lệch cước ạ!';
-      } else if (agentKey === 'TieuVan') {
-        return 'Dạ báo cáo Chủ Tịch, em (Tiểu Vận) đã kiểm tra luồng vận chuyển 3PL tms-web và cập nhật biển số xe đối tác ạ!';
-      } else if (agentKey === 'TieuTham') {
-        return 'Dạ báo cáo Chủ Tịch, em (Tiểu Tham) đang soạn thảo văn bản tham mưu và kế hoạch chỉ đạo trình Chủ Tịch phê duyệt ạ!';
-      } else {
-        return 'Dạ báo cáo Chủ Tịch, em (Tiểu Đệ) đã nhận lệnh và đang điều phối đội ngũ AI thực hiện công việc. Kết quả chi tiết em đồng bộ tức thì sang Telegram ạ!';
-      }
+      sendToAgent(currentChatAgent, text, 'chat');
     }
 
     function escapeHtml(text) {
