@@ -332,8 +332,13 @@
       const config = AGENT_CONFIGS[agentKey] || AGENT_CONFIGS['TieuDe'];
       const indicator = document.getElementById('chatTypingIndicator');
       pushUserBubble(text);
-      document.getElementById('typingAgentName').innerText = config.name + ' đang xử lý...';
+      const nameEl = document.getElementById('typingAgentName');
+      const t0 = Date.now();
+      nameEl.innerText = config.name + ' đang xử lý...';
       indicator.style.display = 'flex';
+      const tick = setInterval(() => {
+        nameEl.innerText = config.name + ' đang xử lý... ' + Math.floor((Date.now() - t0) / 1000) + 's';
+      }, 1000);
       try {
         const reply = await callMuse(kind || 'chat', agentKey, text);
         pushAgentBubble(config, reply, false);
@@ -342,6 +347,7 @@
         pushAgentBubble(config, museErrorText(e), true);
         return false;
       } finally {
+        clearInterval(tick);
         indicator.style.display = 'none';
         chatBusy = false;
       }
