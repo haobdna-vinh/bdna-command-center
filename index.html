@@ -240,8 +240,8 @@
     }
 
     // ===== KẾT NỐI AGENT THẬT (OpenClaw trên VPS bdvinh) =====
-    // MUSE_API do Tiểu Đệ cung cấp, ví dụ 'https://<tên-miền-vps>/muse-api'. Để trống = chưa nối, chat sẽ báo rõ, không trả lời giả.
-    const MUSE_API = '';
+    // MUSE_API: địa chỉ dịch vụ chuyển tin trên VPS bdvinh (Caddy: file.bdvinh.io/muse-api -> relay -> agent OpenClaw). Để trống = chat báo rõ chưa nối, không trả lời giả.
+    const MUSE_API = 'https://file.bdvinh.io/muse-api';
     const MUSE_TIMEOUT_MS = 90000;
     const AGENT_ID_TO_KEY = {
       'tieu_de': 'TieuDe', 'tieu_tham': 'TieuTham', 'tieu_buu': 'TieuBuu',
